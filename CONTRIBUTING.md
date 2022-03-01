@@ -2,17 +2,17 @@
 
 Thank you for your interest in contributing to the Gatsby Plugin Starter.
 
-Both [code](https://github.com/queen-raae/gatsby-plugin-starter/blob/main/CONTRIBUTING.md#contribute-with-code) and [other types](https://github.com/queen-raae/gatsby-plugin-starter/blob/main/CONTRIBUTING.md#contribute-in-other-ways) of contributions are welcome.
+Both [code](https://github.com/davidpaulsson/gatsby-source-airtable-next/blob/main/CONTRIBUTING.md#contribute-with-code) and [other types](https://github.com/davidpaulsson/gatsby-source-airtable-next/blob/main/CONTRIBUTING.md#contribute-in-other-ways) of contributions are welcome.
 
 ## Getting started
 
 - Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 - Read the [README](README.md) to get an overview of the project.
-- Browse the [issues](https://github.com/queen-raae/gatsby-plugin-starter/issues) and [discussions](https://github.com/queen-raae/gatsby-plugin-starter/discussions) already taking place to familiarize yourself with the state of the project.
+- Browse the [issues](https://github.com/davidpaulsson/gatsby-source-airtable-next/issues) and [discussions](https://github.com/davidpaulsson/gatsby-source-airtable-next/discussions) already taking place to familiarize yourself with the state of the project.
 
 ## Contribute with code
 
-You may either solve an exciting [issue](https://github.com/queen-raae/gatsby-plugin-starter/issues), or create a new [issue](https://github.com/queen-raae/gatsby-plugin-starter/issues/new).
+You may either solve an exciting [issue](https://github.com/davidpaulsson/gatsby-source-airtable-next/issues), or create a new [issue](https://github.com/davidpaulsson/gatsby-source-airtable-next/issues/new).
 
 Either way, make sure to outline your plan of action and get some feedback before spending too much time on your solution.
 
@@ -64,8 +64,8 @@ The project uses [conventional commits](https://www.conventionalcommits.org/en/v
 
 ### Questions, Feedback and Suggestions
 
-If you have any questions, feedback or suggestions head on over to [discussions](https://github.com/queen-raae/gatsby-plugin-starter/discussions).
+If you have any questions, feedback or suggestions head on over to [discussions](https://github.com/davidpaulsson/gatsby-source-airtable-next/discussions).
 
 ### Found a bug?
 
-If you find a bug please open an [issue](https://github.com/queen-raae/gatsby-plugin-starter/issues) and/or create a pull request to fix it.
+If you find a bug please open an [issue](https://github.com/davidpaulsson/gatsby-source-airtable-next/issues) and/or create a pull request to fix it.

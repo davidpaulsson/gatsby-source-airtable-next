@@ -1,7 +1,7 @@
 module.exports = {
   plugins: [
     {
-      resolve: "@raae/gatsby-plugin-starter",
+      resolve: "gatsby-source-airtable-next",
       options: {
         emoji: "pirate",
       },
