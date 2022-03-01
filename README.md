@@ -2,6 +2,8 @@
 
 > Gatsby source plugin for Airtable, build for Gatsby v4 and beyond 🚀
 
+## THIS IS NOT PRODUCTION READY, YET!
+
 ## How to install
 
 `npm install gatsby-source-airtable-next`

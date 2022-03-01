@@ -1,6 +1,6 @@
 # Welcome to Gatsby Plugin Starter docs contributing guide <!-- omit in toc -->
 
-Thank you for your interest in contributing to the Gatsby Plugin Starter.
+Thank you for your interest in contributing to gatsby-source-airtable-next.
 
 Both [code](https://github.com/davidpaulsson/gatsby-source-airtable-next/blob/main/CONTRIBUTING.md#contribute-with-code) and [other types](https://github.com/davidpaulsson/gatsby-source-airtable-next/blob/main/CONTRIBUTING.md#contribute-in-other-ways) of contributions are welcome.
 
@@ -24,8 +24,8 @@ If you are new to open source code contributions, here are some links to get you
 ### Fork, Clone and Install
 
 1. Fork this repository
-2. Clone the fork to your local machine: `git clone /git@github.com:<username>/gatsby-plugin-starter.git`
-3. Move into repo folder: `cd gatsby-plugin-starter`
+2. Clone the fork to your local machine: `git clone /git@github.com:davidpaulsson/gatsby-source-airtable-next.git`
+3. Move into repo folder: `cd gatsby-source-airtable-next`
 4. Install packages: `yarn install`
 
 #### Yarn Workspace
