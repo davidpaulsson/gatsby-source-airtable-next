@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "workspaces": [
+    "demo",
+    "plugin"
+  ],
+  "scripts": {
+    "develop": "yarn workspace demo develop",
+    "clean": "yarn workspace demo clean",
+    "semantic-release": "semantic-release",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "6.0.1",
+    "@semantic-release/git": "10.0.1",
+    "husky": "7.0.4",
+    "lint-staged": "12.3.2",
+    "prettier": "2.5.1",
+    "semantic-release": "19.0.2"
+  },
+  "lint-staged": {
+    "*.{js,css,md,json,.releaserc}": "prettier --write"
+  }
+}
