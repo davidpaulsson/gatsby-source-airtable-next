@@ -8,16 +8,26 @@
     "gatsby"
   ],
   "scripts": {
-    "develop": "gatsby develop",
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "gatsby": "4.9.0",
+    "gatsby-plugin-image": "^2.9.0",
+    "gatsby-plugin-sharp": "^4.9.0",
     "gatsby-source-airtable-next": "*",
-    "gatsby": "4.8.1",
+    "gatsby-source-filesystem": "^4.9.0",
+    "gatsby-transformer-sharp": "^4.9.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "slugify": "^1.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.12",
+    "typescript": "^4.6.2"
   }
 }

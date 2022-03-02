@@ -1,33 +1,30 @@
-import {
-  BuildArgs,
-  CreateSchemaCustomizationArgs,
-  GatsbyNode,
-  PluginOptions,
-  SourceNodesArgs,
-} from "gatsby";
-import Airtable from "airtable";
 import _ from "lodash";
+import Airtable from "airtable";
 
-const NODE_TYPE = "Airtable";
+import { NODE_TYPE } from "./constants";
 
-type AirtablePluginOptions = {
-  apiKey: string;
-  tables: {
-    baseId: string;
-    tableName: string;
-    tableView: string;
-    tableLinks: string[];
-  }[];
-};
+import type { AirtablePluginOptions } from "./AirtablePluginOptions";
+import type { GatsbyNode, PluginOptions, SourceNodesArgs } from "gatsby";
 
 // https://www.gatsbyjs.org/docs/node-apis/#sourceNodes
-export const sourceNodes: GatsbyNode["sourceNodes"] = async (
+const sourceNodes: GatsbyNode["sourceNodes"] = async (
   args: SourceNodesArgs,
   options: PluginOptions & AirtablePluginOptions
 ): Promise<void> => {
   const { actions, createNodeId, createContentDigest, reporter } = args;
   const { createNode } = actions;
-  const now = new Date();
+
+  try {
+    if (options.tables === undefined || options.tables.length === 0) {
+      throw "tables is not defined for gatsby-source-airtable-next in gatsby-config.js";
+    }
+    if (options.apiKey === undefined) {
+      throw "apiKey is not defined for gatsby-source-airtable-next in gatsby-config.js";
+    }
+  } catch (err) {
+    reporter.error(`${err}`);
+    return;
+  }
 
   try {
     const promises = options.tables.map(async (table) => {
@@ -44,10 +41,14 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
           table.baseId
         );
 
+        const viewOptions = table.tableView
+          ? {
+              view: table.tableView,
+            }
+          : undefined;
+
         base(table.tableName)
-          .select({
-            view: table.tableView,
-          })
+          .select(viewOptions)
           .eachPage(
             function page(records, fetchNextPage) {
               // This function (`page`) will get called for each page of records.
@@ -90,7 +91,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
 
               const seconds = (Date.now() - now.getTime()) / 1000;
               reporter.success(
-                `Created ${data.length} nodes from Airtable ${table.tableName} - ${seconds}s`
+                `Created ${data.length} nodes from Airtable table ${table.tableName} - ${seconds}s`
               );
 
               // Done! 🎉
@@ -101,8 +102,6 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
     });
 
     await Promise.all(promises);
-    const seconds = (Date.now() - now.getTime()) / 1000;
-    reporter.success(`Creating nodes from Airtable tables - ${seconds}s`);
   } catch (error) {
     console.error(
       "Uh-oh, something went wrong with Airtable node creation.",
@@ -114,40 +113,4 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
   // const lastFetched = await cache.get(`timestamp`);
 };
 
-// https://www.gatsbyjs.org/docs/node-apis/#onPostBuild
-export const onPostBuild: GatsbyNode["onPostBuild"] = async (
-  args: BuildArgs
-): Promise<void> => {
-  const { cache } = args;
-
-  // TODO: use this :)
-  // set a timestamp at the end of the build
-  await cache.set("timestamp", Date.now());
-};
-
-export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
-  (
-    args: CreateSchemaCustomizationArgs,
-    options: PluginOptions & AirtablePluginOptions
-  ) => {
-    const now = new Date();
-    const { actions, reporter } = args;
-    const { createTypes } = actions;
-
-    const strings: string[] = [];
-    options.tables.forEach((table) => {
-      table.tableLinks?.forEach((link) => {
-        const cc = _.camelCase(link);
-        strings.push(`type AirtableData implements Node {
-        ${cc}: [Airtable] @link(by: "airtableId", from: "${cc}")
-      }`);
-      });
-    });
-
-    const typeDefs = strings.join(`
-    `);
-
-    createTypes(typeDefs);
-    const seconds = (Date.now() - now.getTime()) / 1000;
-    reporter.success(`Building Airtable schema - ${seconds}s`);
-  };
+export default sourceNodes;

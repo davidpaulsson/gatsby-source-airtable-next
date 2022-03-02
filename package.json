@@ -5,7 +5,8 @@
     "plugin"
   ],
   "scripts": {
-    "start": "yarn workspace demo develop",
+    "start": "yarn workspace demo start",
+    "build": "yarn workspace demo build",
     "clean": "yarn workspace demo clean",
     "semantic-release": "semantic-release",
     "prepare": "husky install"

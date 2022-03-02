@@ -13,8 +13,8 @@
     "access": "public"
   },
   "scripts": {
-    "start": "tsc gatsby-node.ts --strict --noUnusedLocals --noUnusedParameters --noImplicitReturns --module \"commonjs\" --removeComments false --preserveConstEnums --skipLibCheck --esModuleInterop --sourceMap --target \"es2017\" --declaration --lib \"es2017\" --watch",
-    "build": "tsc gatsby-node.ts --strict --noUnusedLocals --noUnusedParameters --noImplicitReturns --module \"commonjs\" --removeComments false --preserveConstEnums --skipLibCheck --esModuleInterop --sourceMap --target \"es2017\" --declaration --lib \"es2017\"",
+    "start": "tsc --watch",
+    "build": "tsc",
     "postversion": "cp ../README.md ./README.md && cp ../CHANGELOG.md ./CHANGELOG.md"
   },
   "repository": {
@@ -27,14 +27,16 @@
   },
   "homepage": "https://github.com/davidpaulsson/gatsby-source-airtable-next#readme",
   "dependencies": {
-    "lodash": "^4.17.21",
-    "airtable": "^0.11.2"
+    "airtable": "^0.11.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
+    "gatsby-source-filesystem": "^4.9.0",
     "typescript": "^4.6.2"
   },
   "peerDependencies": {
-    "gatsby": "^3.0.0 || ^4.0.0"
+    "gatsby": "^4.0.0",
+    "gatsby-plugin-image": "^2.0.0"
   }
 }
