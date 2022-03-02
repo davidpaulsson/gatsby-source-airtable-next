@@ -2,9 +2,9 @@
 
 > Gatsby source plugin for Airtable, built for Gatsby v4 and beyond 🚀
 
-![NPM Downloads](https://img.shields.io/npm/dw/:gatsby-source-airtable-next)
-![NPM License](https://img.shields.io/npm/l/:gatsby-source-airtable-next)
-[![Twitter](https://img.shields.io/twitter/follow/:davidpaulsson.svg?style=social&label=@:davidpaulsson)](https://twitter.com/:davidpaulsson)
+![NPM Downloads](https://img.shields.io/npm/dw/gatsby-source-airtable-next)
+![NPM License](https://img.shields.io/npm/l/gatsby-source-airtable-next)
+[![Twitter](https://img.shields.io/twitter/follow/davidpaulsson.svg?style=social&label=@davidpaulsson)](https://twitter.com/davidpaulsson)
 
 ## How to install
 
