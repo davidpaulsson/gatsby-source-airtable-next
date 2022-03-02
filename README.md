@@ -16,7 +16,7 @@ or
 
 ## How to use
 
-```
+```js
 module.exports = {
   plugins: [
     {
