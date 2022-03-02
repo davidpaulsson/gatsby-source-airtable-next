@@ -1,8 +1,6 @@
 # gatsby-source-airtable-next
 
-> Gatsby source plugin for Airtable, build for Gatsby v4 and beyond 🚀
-
-## THIS IS NOT PRODUCTION READY, YET!
+> Gatsby source plugin for Airtable, built for Gatsby v4 and beyond 🚀
 
 ## How to install
 
@@ -17,10 +15,30 @@ or
 ```
 module.exports = {
   plugins: [
-    `gatsby-source-airtable-next`
+    {
+      resolve: "gatsby-source-airtable-next",
+      options: {
+        apiKey: "YOUR_AIRTABLE_KEY", // may instead specify via env
+        tables: [
+          {
+            baseId: "YOUR_AIRTABLE_BASE_ID",
+            tableName: "YOUR_AIRTABLE_NAME",
+            tableView: "YOUR_AIRTABLE_VIEW_NAME", // optional, you can keep sort order and filters from Airtable views. NOTE: hidden fields will still be queried
+            tableLinks: ["YOUR_AIRTABLE_LINKS"], // optional, fields that links to other tables. if specified here they will become nested nodes
+          },
+        ],
+        downloadLocal: ["YOUR_AIRTABLE_FIELDS"], // optional, field names for your Airtable attachments fields
+      },
+    }
   ],
 }
 ```
+
+**NOTE**: `gatsby-source-airtable-next` camelCases all field names. So if you have a field on an Airtable column named "Total units sold", it will be renamed `totalUnitsSold`.
+
+### Example
+
+An [example site](https://gatsby-source-airtable-next.netlify.app/) is in the [demo folder](https://github.com/davidpaulsson/gatsby-source-airtable-next/tree/main/demo). This site uses [this Airtable base](https://airtable.com/shryTi3YWlgndB88I).
 
 ## Questions, Feedback and Suggestions
 
