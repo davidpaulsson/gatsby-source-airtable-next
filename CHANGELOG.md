@@ -1,3 +1,13 @@
+# [2.0.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v1.1.0...v2.0.0) (2022-03-03)
+
+### Code Refactoring
+
+- rename tableLinks to recordLinks ([f646a1a](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/f646a1afac615baad8ad65542fe2bf7363521fd7))
+
+### BREAKING CHANGES
+
+- The `tableLinks` option has been renamed `recordLinks`.
+
 # [1.1.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v1.0.0...v1.1.0) (2022-03-02)
 
 ### Features
