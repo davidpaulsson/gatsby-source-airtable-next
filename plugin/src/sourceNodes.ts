@@ -5,6 +5,7 @@ import { NODE_TYPE } from "./constants";
 
 import type { AirtablePluginOptions } from "./AirtablePluginOptions";
 import type { GatsbyNode, PluginOptions, SourceNodesArgs } from "gatsby";
+import { isAirtableRecordId } from "./utils";
 
 // https://www.gatsbyjs.org/docs/node-apis/#sourceNodes
 const sourceNodes: GatsbyNode["sourceNodes"] = async (
@@ -12,7 +13,7 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
   options: PluginOptions & AirtablePluginOptions
 ): Promise<void> => {
   const { actions, createNodeId, createContentDigest, reporter } = args;
-  const { createNode } = actions;
+  const { createNode, createTypes } = actions;
 
   try {
     if (options.tables === undefined || options.tables.length === 0) {
@@ -75,7 +76,7 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
               }
 
               // Loop through data and create Gatsby nodes
-              data.forEach((entry) =>
+              data.forEach((entry) => {
                 createNode({
                   ...entry,
                   id: createNodeId(`${NODE_TYPE}-${entry.airtableId}`),
@@ -86,8 +87,21 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
                     content: JSON.stringify(entry),
                     contentDigest: createContentDigest(entry),
                   },
-                })
-              );
+                });
+
+                for (const [key, value] of Object.entries(entry.data)) {
+                  if (
+                    // record links are always an array
+                    Array.isArray(value) &&
+                    // ensure the whole array is airtable ids
+                    value.every((val) => isAirtableRecordId.test(val))
+                  ) {
+                    createTypes(`type AirtableData implements Node {
+                      ${key}: [Airtable] @link(by: "airtableId", from: "${key}")
+                    }`);
+                  }
+                }
+              });
 
               const seconds = (Date.now() - now.getTime()) / 1000;
               reporter.success(

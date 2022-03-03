@@ -8,10 +8,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = __importDefault(require("lodash"));
 const airtable_1 = __importDefault(require("airtable"));
 const constants_1 = require("./constants");
+const utils_1 = require("./utils");
 // https://www.gatsbyjs.org/docs/node-apis/#sourceNodes
 const sourceNodes = async (args, options) => {
   const { actions, createNodeId, createContentDigest, reporter } = args;
-  const { createNode } = actions;
+  const { createNode, createTypes } = actions;
   try {
     if (options.tables === undefined || options.tables.length === 0) {
       throw "tables is not defined for gatsby-source-airtable-next in gatsby-config.js";
@@ -63,7 +64,7 @@ const sourceNodes = async (args, options) => {
                 return;
               }
               // Loop through data and create Gatsby nodes
-              data.forEach((entry) =>
+              data.forEach((entry) => {
                 createNode({
                   ...entry,
                   id: createNodeId(
@@ -76,8 +77,20 @@ const sourceNodes = async (args, options) => {
                     content: JSON.stringify(entry),
                     contentDigest: createContentDigest(entry),
                   },
-                })
-              );
+                });
+                for (const [key, value] of Object.entries(entry.data)) {
+                  if (
+                    // record links are always an array
+                    Array.isArray(value) &&
+                    // ensure the whole array is airtable ids
+                    value.every((val) => utils_1.isAirtableRecordId.test(val))
+                  ) {
+                    createTypes(`type AirtableData implements Node {
+                      ${key}: [Airtable] @link(by: "airtableId", from: "${key}")
+                    }`);
+                  }
+                }
+              });
               const seconds = (Date.now() - now.getTime()) / 1000;
               reporter.success(
                 `Created ${data.length} nodes from Airtable table ${table.tableName} - ${seconds}s`
