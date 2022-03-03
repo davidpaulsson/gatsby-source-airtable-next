@@ -12,10 +12,13 @@ const ProductPage = ({
     <div>
       <h1>{data.name}</h1>
       <p>{data.description}</p>
-      <GatsbyImage
-        image={data.images[0].localFile.childImageSharp.gatsbyImageData}
-        alt={data.name}
-      />
+      {data.images.map((image) => (
+        <GatsbyImage
+          key={image.id}
+          image={image.localFile.childImageSharp.gatsbyImageData}
+          alt={data.name}
+        />
+      ))}
       <ul>
         <li>Price: $ {data.unitCost.toLocaleString()}</li>
 
@@ -43,6 +46,7 @@ export const query = graphql`
         name
         description
         images {
+          id
           localFile {
             childImageSharp {
               gatsbyImageData(width: 500, aspectRatio: 1.5)
