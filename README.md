@@ -1,6 +1,6 @@
 # gatsby-source-airtable-next
 
-Gatsby source plugin for Airtable that is built for modern Gatsby sites
+Airtable source plugin, built for modern Gatsby sites
 
 ![NPM Version](https://img.shields.io/npm/v/gatsby-source-airtable-next)
 ![NPM Downloads](https://img.shields.io/npm/dw/gatsby-source-airtable-next)
@@ -29,7 +29,7 @@ module.exports = {
             baseId: "AIRTABLE_BASE_ID",
             tableName: "TABLE_NAME",
             tableView: "TABLE_VIEW_NAME", // optional
-            tableLinks: ["LINK_TO_ANOTHER_RECORD_FIELDS"], // optional
+            recordLinks: ["LINK_TO_ANOTHER_RECORD_FIELDS"], // optional
           },
           // can be multiple tables, even from different bases
         ],
@@ -48,9 +48,9 @@ For example `Phone no. (Cell)` will become `phoneNoCell`, `Country of origin` wi
 
 ### "Link to another Record" type fields
 
-`options: { tables: { tableLinks?: string[] }[] }` _optional_
+`options: { tables: { recordLinks?: string[] }[] }` _optional_
 
-If set enables links to records in other tables. If you wish to query data from a linked record, you must specify the field name in `tableLinks`. If not set this will be an array of Airtable record IDs.
+If set enables links to records in other tables. If you wish to query data from a linked record, you must specify the field name in `recordLinks`. If not set this will be an array of Airtable record IDs.
 
 ### Table views
 
@@ -76,7 +76,7 @@ If you're looking to source data from Airtable, and don't want a wall of `verbos
 
 An [example site](https://gatsbysourceairtablenext.gatsbyjs.io/) is available in the [demo folder](https://github.com/davidpaulsson/gatsby-source-airtable-next/tree/main/demo).
 
-This site uses [this Airtable base](https://airtable.com/shryTi3YWlgndB88I) and uses the `tableLinks` option to connect different Airtable tables, and the `downloadLocal` option to download "Attachment" type fields from Airtable for use with [`gatsby-image-plugin`](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/).
+This site uses [this Airtable base](https://airtable.com/shryTi3YWlgndB88I) and uses the `recordLinks` option to connect different Airtable tables, and the `downloadLocal` option to download "Attachment" type fields from Airtable for use with [`gatsby-image-plugin`](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/).
 
 ## Questions, Feedback, and Suggestions
 

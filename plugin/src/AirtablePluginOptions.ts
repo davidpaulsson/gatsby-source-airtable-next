@@ -4,7 +4,7 @@ export type AirtablePluginOptions = {
     baseId: string;
     tableName: string;
     tableView?: string;
-    tableLinks?: string[];
+    recordLinks?: string[];
   }[];
   downloadLocal?: string[];
 };

@@ -29,7 +29,7 @@ const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = (
 
   const strings: string[] = [];
   options.tables.forEach((table) => {
-    table.tableLinks?.forEach((link) => {
+    table.recordLinks?.forEach((link) => {
       const cc = _.camelCase(link);
       strings.push(`type AirtableData implements Node {
         ${cc}: [Airtable] @link(by: "airtableId", from: "${cc}")

@@ -23,7 +23,7 @@ const createSchemaCustomization = (args, options) => {
   }
   const strings = [];
   options.tables.forEach((table) => {
-    table.tableLinks?.forEach((link) => {
+    table.recordLinks?.forEach((link) => {
       const cc = lodash_1.default.camelCase(link);
       strings.push(`type AirtableData implements Node {
         ${cc}: [Airtable] @link(by: "airtableId", from: "${cc}")
