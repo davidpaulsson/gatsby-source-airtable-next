@@ -1,3 +1,9 @@
+# [2.1.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v2.0.0...v2.1.0) (2022-03-07)
+
+### Features
+
+- cache downloaded attachment files ([d99a876](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/d99a87669957e4d304576b1918b9a15807154449))
+
 # [2.0.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v1.1.0...v2.0.0) (2022-03-03)
 
 ### Code Refactoring
