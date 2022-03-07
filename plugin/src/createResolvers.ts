@@ -1,20 +1,18 @@
 import _ from "lodash";
 
-import { createRemoteFileNode } from "gatsby-source-filesystem";
-
 import type { AirtablePluginOptions } from "./AirtablePluginOptions";
 import type { CreateResolversArgs, GatsbyNode, PluginOptions } from "gatsby";
+import { fileProcessor } from "./fileProcessor";
 
 const createResolvers: GatsbyNode["createResolvers"] = (
   args: CreateResolversArgs,
   options: PluginOptions & AirtablePluginOptions
 ) => {
-  const { actions, cache, createNodeId, createResolvers, store, reporter } =
-    args;
-  const { createNode } = actions;
-  if (!_.isArray(options.downloadLocal)) {
+  if (!_.isArray(options.downloadLocal) || options.downloadLocal.length === 0) {
     return;
   }
+
+  const { createResolvers, reporter } = args;
 
   const now = new Date();
 
@@ -23,30 +21,9 @@ const createResolvers: GatsbyNode["createResolvers"] = (
       [_.startCase(_.camelCase(`AirtableData ${field}`)).replace(/ /g, "")]: {
         localFile: {
           type: "File",
-          resolve(source: { type: string; url: string }) {
-            let extention = source.type.split("/")[1];
-
-            switch (extention) {
-              case "jpeg":
-                extention = ".jpg";
-                break;
-              case "svg+xml":
-                extention = ".svg";
-                break;
-              default:
-                extention = `.${extention}`;
-                break;
-            }
-
-            return createRemoteFileNode({
-              url: source.url,
-              store,
-              cache,
-              createNode,
-              createNodeId,
-              reporter,
-              ext: extention,
-            });
+          async resolve(source: { type: string; url: string }) {
+            const attachment = await fileProcessor(source, args);
+            return attachment;
           },
         },
       },

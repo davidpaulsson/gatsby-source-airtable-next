@@ -6,14 +6,15 @@ var __importDefault =
   };
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = __importDefault(require("lodash"));
-const gatsby_source_filesystem_1 = require("gatsby-source-filesystem");
+const fileProcessor_1 = require("./fileProcessor");
 const createResolvers = (args, options) => {
-  const { actions, cache, createNodeId, createResolvers, store, reporter } =
-    args;
-  const { createNode } = actions;
-  if (!lodash_1.default.isArray(options.downloadLocal)) {
+  if (
+    !lodash_1.default.isArray(options.downloadLocal) ||
+    options.downloadLocal.length === 0
+  ) {
     return;
   }
+  const { createResolvers, reporter } = args;
   const now = new Date();
   options.downloadLocal.forEach((field) => {
     createResolvers({
@@ -22,28 +23,12 @@ const createResolvers = (args, options) => {
         .replace(/ /g, "")]: {
         localFile: {
           type: "File",
-          resolve(source) {
-            let extention = source.type.split("/")[1];
-            switch (extention) {
-              case "jpeg":
-                extention = ".jpg";
-                break;
-              case "svg+xml":
-                extention = ".svg";
-                break;
-              default:
-                extention = `.${extention}`;
-                break;
-            }
-            return (0, gatsby_source_filesystem_1.createRemoteFileNode)({
-              url: source.url,
-              store,
-              cache,
-              createNode,
-              createNodeId,
-              reporter,
-              ext: extention,
-            });
+          async resolve(source) {
+            const attachment = await (0, fileProcessor_1.fileProcessor)(
+              source,
+              args
+            );
+            return attachment;
           },
         },
       },
