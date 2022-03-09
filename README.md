@@ -29,11 +29,16 @@ module.exports = {
             baseId: "AIRTABLE_BASE_ID",
             tableName: "TABLE_NAME",
             tableView: "TABLE_VIEW_NAME", // optional
-            recordLinks: ["LINK_TO_ANOTHER_RECORD_FIELDS"], // optional
+            recordLinks: [
+              {
+                fromField: "LINK_TO_ANOTHER_RECORD_FIELD_NAME",
+                toTable: "TABLE_NAME_THAT_fromField_LINKS_TO",
+              },
+            ], // optional
+            downloadLocal: ["ATTACHMENT_FIELDS"], // optional
           },
           // can be multiple tables, even from different bases
         ],
-        downloadLocal: ["ATTACHMENT_FIELDS"], // optional
       },
     },
   ],
@@ -48,9 +53,9 @@ For example `Phone no. (Cell)` will become `phoneNoCell`, `Country of origin` wi
 
 ### "Link to another Record" type fields
 
-`options: { tables: { recordLinks?: string[] }[] }` _optional_
+`options: { tables: { recordLinks?: { fromField: string; toTable: string; }[]; }` _optional_
 
-If set enables links to records in other tables. If you wish to query data from a linked record, you must specify the field name in `recordLinks`. If not set this will be an array of Airtable record IDs.
+If set enables links to records in other tables. If you wish to query data from a linked record, you must specify the from field name and to table name in `recordLinks`. If not set this will be an array of Airtable record IDs.
 
 ### Table views
 
@@ -68,9 +73,11 @@ If set will download the "Attachment" type fields specified in your gatsby-confi
 
 ### How does this compare to `gatsby-source-airtable`?
 
-[`gatsby-source-airtable`](https://github.com/jbolda/gatsby-source-airtable) is a great source plugin. I both use this plugin and have gotten a lot of inspiration from it. But it hasn't been updated in quite some time and was originally written for Gatsby v2. A lot has happened with Gatsby since those days.
+[`gatsby-source-airtable`](https://github.com/jbolda/gatsby-source-airtable) is a great source plugin. I both use this plugin and have gotten a lot of inspiration from it. But it hasn't been updated in quite some time. The main differences between this source plugin and gatsby-source-airtable are:
 
-If you're looking to source data from Airtable, and don't want a wall of `verbose The ___NODE convention is deprecated. Please use the @link directive instead. Migration: https://gatsby.dev/node-convention-deprecation` deprecation warnings in the Gatsby build process logs then this plugin is for you.
+- Keys are camelCased.
+- Keys are directly on the node and not nested under a `data` property.
+- Node types are per table, so if you source multiple tables you won't have keys with `null` data. Since keys are based on each table, they cannot clash with each other.
 
 ## Example
 
