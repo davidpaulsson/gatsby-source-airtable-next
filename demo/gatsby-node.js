@@ -5,34 +5,24 @@ exports.createPages = async function ({ actions, graphql }) {
 
   const { data } = await graphql(`
     query {
-      furniture: allAirtable(
-        filter: { table: { eq: "Furniture" } }
-        sort: { fields: data___name }
-      ) {
+      allAirtableFurniture(sort: { fields: name }) {
         nodes {
           id
-          data {
-            name
-          }
+          name
         }
       }
-      designers: allAirtable(
-        filter: { table: { eq: "Designers" } }
-        sort: { fields: data___name }
-      ) {
+      allAirtableDesigners(sort: { fields: name }) {
         nodes {
           id
-          data {
-            name
-          }
+          name
         }
       }
     }
   `);
 
-  data.furniture.nodes.forEach((node) => {
+  data.allAirtableFurniture.nodes.forEach((node) => {
     createPage({
-      path: `/furniture/${slugify(node.data.name, { lower: true })}`,
+      path: `/furniture/${slugify(node.name, { lower: true })}`,
       component: require.resolve("./src/templates/product.tsx"),
       context: {
         id: node.id,
@@ -40,9 +30,9 @@ exports.createPages = async function ({ actions, graphql }) {
     });
   });
 
-  data.designers.nodes.forEach((node) => {
+  data.allAirtableDesigners.nodes.forEach((node) => {
     createPage({
-      path: `/designers/${slugify(node.data.name, { lower: true })}`,
+      path: `/designers/${slugify(node.name, { lower: true })}`,
       component: require.resolve("./src/templates/designer.tsx"),
       context: {
         id: node.id,

@@ -18,16 +18,27 @@ module.exports = {
             baseId: process.env.AIRTABLE_BASE_ID,
             tableName: "Furniture",
             tableView: process.env.AIRTABLE_TABLE_VIEW,
-            recordLinks: ["Designer"],
+            recordLinks: [
+              {
+                fromField: "Designer",
+                toTable: "Designers",
+              },
+            ],
+            downloadLocal: ["Images"],
           },
           {
             baseId: process.env.AIRTABLE_BASE_ID,
             tableName: "Designers",
             tableView: process.env.AIRTABLE_TABLE_VIEW,
-            recordLinks: ["Furniture"],
+            recordLinks: [
+              {
+                fromField: "Furniture",
+                toTable: "Furniture",
+              },
+            ],
+            downloadLocal: ["Photo"],
           },
         ],
-        downloadLocal: ["Images", "Photo"],
       },
     },
   ],

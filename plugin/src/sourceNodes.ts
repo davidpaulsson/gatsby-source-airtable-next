@@ -5,13 +5,14 @@ import { NODE_TYPE } from "./constants";
 
 import type { AirtablePluginOptions } from "./AirtablePluginOptions";
 import type { GatsbyNode, PluginOptions, SourceNodesArgs } from "gatsby";
+import { pascalCase } from "./utils";
 
 // https://www.gatsbyjs.org/docs/node-apis/#sourceNodes
 const sourceNodes: GatsbyNode["sourceNodes"] = async (
   args: SourceNodesArgs,
   options: PluginOptions & AirtablePluginOptions
 ): Promise<void> => {
-  const { actions, createNodeId, createContentDigest, reporter } = args;
+  const { actions, cache, createNodeId, createContentDigest, reporter } = args;
   const { createNode } = actions;
 
   try {
@@ -31,10 +32,9 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
       return new Promise<void>((resolve, reject) => {
         const now = new Date();
 
-        const data: {
+        const rows: {
           airtableId: string;
-          table: string;
-          data: { [key: string]: any };
+          [key: string]: any;
         }[] = [];
 
         const base = new Airtable({ apiKey: options.apiKey }).base(
@@ -42,9 +42,7 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
         );
 
         const viewOptions = table.tableView
-          ? {
-              view: table.tableView,
-            }
+          ? { view: table.tableView }
           : undefined;
 
         base(table.tableName)
@@ -56,10 +54,9 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
                 const fields = _.mapKeys(record.fields, (_v, k) =>
                   _.camelCase(k)
                 );
-                data.push({
+                rows.push({
                   airtableId: record.getId(),
-                  table: table.tableName,
-                  data: fields,
+                  ...fields,
                 });
               });
 
@@ -68,30 +65,36 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
               // If there are no more records, `done` will get called.
               fetchNextPage();
             },
-            function done(err) {
+            async function done(err) {
               if (err) {
                 reject(err);
                 return;
               }
 
+              const nodeType = pascalCase(`${NODE_TYPE} ${table.tableName}`);
+
               // Loop through data and create Gatsby nodes
-              data.forEach((entry) =>
+              rows.forEach((row) =>
                 createNode({
-                  ...entry,
-                  id: createNodeId(`${NODE_TYPE}-${entry.airtableId}`),
+                  ...row,
+                  id: createNodeId(`${nodeType}-${row.airtableId}`),
                   parent: null,
                   children: [],
                   internal: {
-                    type: NODE_TYPE,
-                    content: JSON.stringify(entry),
-                    contentDigest: createContentDigest(entry),
+                    type: nodeType,
+                    content: JSON.stringify(row),
+                    contentDigest: createContentDigest(row),
                   },
                 })
               );
 
+              await cache.set("timestamp", Date.now());
+
               const seconds = (Date.now() - now.getTime()) / 1000;
-              reporter.success(
-                `Created ${data.length} nodes from Airtable table ${table.tableName} - ${seconds}s`
+              reporter.info(
+                `Airtable: Created ${rows.length} ${pascalCase(
+                  `${NODE_TYPE} ${table.tableName}`
+                )} nodes - ${seconds}s`
               );
 
               // Done! 🎉
@@ -108,9 +111,6 @@ const sourceNodes: GatsbyNode["sourceNodes"] = async (
       error
     );
   }
-
-  // get the last timestamp from the cache
-  // const lastFetched = await cache.get(`timestamp`);
 };
 
 export default sourceNodes;

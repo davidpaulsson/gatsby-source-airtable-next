@@ -6,8 +6,9 @@ var __importDefault =
   };
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = __importDefault(require("lodash"));
+const constants_1 = require("./constants");
+const utils_1 = require("./utils");
 const createSchemaCustomization = (args, options) => {
-  const now = new Date();
   const { actions, reporter } = args;
   const { createTypes } = actions;
   try {
@@ -23,17 +24,21 @@ const createSchemaCustomization = (args, options) => {
   }
   const strings = [];
   options.tables.forEach((table) => {
-    table.recordLinks?.forEach((link) => {
-      const cc = lodash_1.default.camelCase(link);
-      strings.push(`type AirtableData implements Node {
-        ${cc}: [Airtable] @link(by: "airtableId", from: "${cc}")
+    table.recordLinks?.forEach((recordLink) => {
+      const fromType = (0, utils_1.pascalCase)(
+        `${constants_1.NODE_TYPE} ${table.tableName}`
+      );
+      const toType = (0, utils_1.pascalCase)(
+        `${constants_1.NODE_TYPE} ${recordLink.toTable}`
+      );
+      const key = lodash_1.default.camelCase(recordLink.fromField);
+      strings.push(`type ${fromType} implements Node {
+        ${key}: [${toType}] @link(by: "airtableId")
       }`);
     });
   });
   const typeDefs = strings.join(`
-    `);
+`);
   createTypes(typeDefs);
-  const seconds = (Date.now() - now.getTime()) / 1000;
-  reporter.success(`Building Airtable schema - ${seconds}s`);
 };
 exports.default = createSchemaCustomization;

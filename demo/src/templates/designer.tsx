@@ -3,22 +3,18 @@ import { graphql, Link } from "gatsby";
 import { GatsbyImage } from "gatsby-plugin-image";
 import slugify from "slugify";
 
-const DesignerPage = ({
-  data: {
-    airtable: { data },
-  },
-}) => {
+const DesignerPage = ({ data: { designer } }) => {
   return (
     <div>
-      <h1>{data.name}</h1>
-      <p>{data.bio}</p>
+      <h1>{designer.name}</h1>
+      <p>{designer.bio}</p>
       <GatsbyImage
-        image={data.photo[0].localFile.childImageSharp.gatsbyImageData}
-        alt={data.name}
+        image={designer.photo[0].localFile.childImageSharp.gatsbyImageData}
+        alt={designer.name}
       />
-      <h2>Furniture by {data.name}</h2>
+      <h2>Furniture by {designer.name}</h2>
       <ul>
-        {data.furniture.map(({ data: { name, images } }) => (
+        {designer.furniture.map(({ name, images }) => (
           <li key={name}>
             <Link to={`/furniture/${slugify(name, { lower: true })}/`}>
               {name}
@@ -38,26 +34,22 @@ const DesignerPage = ({
 
 export const query = graphql`
   query DesignerPage($id: String!) {
-    airtable(id: { eq: $id }) {
-      data {
-        name
-        bio
-        photo {
-          localFile {
-            childImageSharp {
-              gatsbyImageData(width: 500, aspectRatio: 1.5)
-            }
+    designer: airtableDesigners(id: { eq: $id }) {
+      name
+      bio
+      photo {
+        localFile {
+          childImageSharp {
+            gatsbyImageData(width: 500, aspectRatio: 1.5)
           }
         }
-        furniture {
-          data {
-            name
-            images {
-              localFile {
-                childImageSharp {
-                  gatsbyImageData(height: 200, width: 200)
-                }
-              }
+      }
+      furniture {
+        name
+        images {
+          localFile {
+            childImageSharp {
+              gatsbyImageData(height: 200, width: 200)
             }
           }
         }

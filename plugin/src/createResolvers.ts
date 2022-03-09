@@ -3,35 +3,39 @@ import _ from "lodash";
 import type { AirtablePluginOptions } from "./AirtablePluginOptions";
 import type { CreateResolversArgs, GatsbyNode, PluginOptions } from "gatsby";
 import { fileProcessor } from "./fileProcessor";
+import { NODE_TYPE } from "./constants";
+import { pascalCase } from "./utils";
 
 const createResolvers: GatsbyNode["createResolvers"] = (
   args: CreateResolversArgs,
   options: PluginOptions & AirtablePluginOptions
 ) => {
-  if (!_.isArray(options.downloadLocal) || options.downloadLocal.length === 0) {
+  if (options.tables.every((table) => !table.downloadLocal)) {
     return;
   }
 
-  const { createResolvers, reporter } = args;
+  const { createResolvers } = args;
 
-  const now = new Date();
+  options.tables.forEach((table) => {
+    if (!table.downloadLocal) {
+      return;
+    }
 
-  options.downloadLocal.forEach((field) => {
-    createResolvers({
-      [_.startCase(_.camelCase(`AirtableData ${field}`)).replace(/ /g, "")]: {
-        localFile: {
-          type: "File",
-          async resolve(source: { type: string; url: string }) {
-            const attachment = await fileProcessor(source, args);
-            return attachment;
+    const nodeType = pascalCase(`${NODE_TYPE} ${table.tableName}`);
+    table.downloadLocal.forEach((field) => {
+      createResolvers({
+        [pascalCase(`${nodeType} ${field}`)]: {
+          localFile: {
+            type: "File",
+            async resolve(source: { type: string; url: string }) {
+              const attachment = await fileProcessor(source, args);
+              return attachment;
+            },
           },
         },
-      },
+      });
     });
   });
-
-  const seconds = (Date.now() - now.getTime()) / 1000;
-  reporter.success(`Creating Airtable attachment resolvers - ${seconds}s`);
 };
 
 export default createResolvers;

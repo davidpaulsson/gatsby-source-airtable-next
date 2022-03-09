@@ -6,12 +6,13 @@ import type {
   GatsbyNode,
   PluginOptions,
 } from "gatsby";
+import { NODE_TYPE } from "./constants";
+import { pascalCase } from "./utils";
 
 const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = (
   args: CreateSchemaCustomizationArgs,
   options: PluginOptions & AirtablePluginOptions
 ) => {
-  const now = new Date();
   const { actions, reporter } = args;
   const { createTypes } = actions;
 
@@ -29,20 +30,21 @@ const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = (
 
   const strings: string[] = [];
   options.tables.forEach((table) => {
-    table.recordLinks?.forEach((link) => {
-      const cc = _.camelCase(link);
-      strings.push(`type AirtableData implements Node {
-        ${cc}: [Airtable] @link(by: "airtableId", from: "${cc}")
+    table.recordLinks?.forEach((recordLink) => {
+      const fromType = pascalCase(`${NODE_TYPE} ${table.tableName}`);
+      const toType = pascalCase(`${NODE_TYPE} ${recordLink.toTable}`);
+      const key = _.camelCase(recordLink.fromField);
+
+      strings.push(`type ${fromType} implements Node {
+        ${key}: [${toType}] @link(by: "airtableId")
       }`);
     });
   });
 
   const typeDefs = strings.join(`
-    `);
+`);
 
   createTypes(typeDefs);
-  const seconds = (Date.now() - now.getTime()) / 1000;
-  reporter.success(`Building Airtable schema - ${seconds}s`);
 };
 
 export default createSchemaCustomization;

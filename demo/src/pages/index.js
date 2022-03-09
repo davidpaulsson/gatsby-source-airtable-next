@@ -3,26 +3,16 @@ import slugify from "slugify";
 import React from "react";
 
 const IndexPage = () => {
-  const { furniture, designers } = useStaticQuery(graphql`
+  const { allAirtableFurniture, allAirtableDesigners } = useStaticQuery(graphql`
     {
-      furniture: allAirtable(
-        filter: { table: { eq: "Furniture" } }
-        sort: { fields: data___name }
-      ) {
+      allAirtableFurniture(sort: { fields: name }) {
         nodes {
-          data {
-            name
-          }
+          name
         }
       }
-      designers: allAirtable(
-        filter: { table: { eq: "Designers" } }
-        sort: { fields: data___name }
-      ) {
+      allAirtableDesigners(sort: { fields: name }) {
         nodes {
-          data {
-            name
-          }
+          name
         }
       }
     }
@@ -32,20 +22,20 @@ const IndexPage = () => {
     <main>
       <h1>Furniture</h1>
       <ul>
-        {furniture.nodes.map((node) => (
-          <li key={node.data.name}>
-            <Link to={`/furniture/${slugify(node.data.name, { lower: true })}`}>
-              {node.data.name}
+        {allAirtableFurniture.nodes.map((node) => (
+          <li key={node.name}>
+            <Link to={`/furniture/${slugify(node.name, { lower: true })}`}>
+              {node.name}
             </Link>
           </li>
         ))}
       </ul>
       <h1>Designers</h1>
       <ul>
-        {designers.nodes.map((node) => (
-          <li key={node.data.name}>
-            <Link to={`/designers/${slugify(node.data.name, { lower: true })}`}>
-              {node.data.name}
+        {allAirtableDesigners.nodes.map((node) => (
+          <li key={node.name}>
+            <Link to={`/designers/${slugify(node.name, { lower: true })}`}>
+              {node.name}
             </Link>
           </li>
         ))}
