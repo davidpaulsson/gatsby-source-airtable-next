@@ -67,7 +67,7 @@ For example, if you are creating a blog or documentation site, specify a publish
 
 ### "Attachment" type fields
 
-`options:{ downloadLocal?: string[] }` _optional_
+`options: { tables: { downloadLocal?: string[] }[] }` _optional_
 
 If set will download the "Attachment" type fields specified in your gatsby-config. This creates a file node (`localFile`) that then can be queried using GraphQL and used with, for example, [`gatsby-image-plugin`](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/) if it's an image attachment.
 
