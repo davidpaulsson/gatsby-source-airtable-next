@@ -143,35 +143,26 @@ const onCreateNode = async (args, options) => {
 exports.onCreateNode = onCreateNode;
 // https://www.gatsbyjs.org/docs/node-apis/#createSchemaCustomization
 const createSchemaCustomization = (args, options) => {
-  const { actions, reporter, schema } = args;
-  try {
-    if (options.tables === undefined || options.tables.length === 0) {
-      throw "tables is not defined for gatsby-source-airtable-next in gatsby-config.js";
-    }
-    if (options.apiKey === undefined) {
-      throw "apiKey is not defined for gatsby-source-airtable-next in gatsby-config.js";
-    }
-  } catch (err) {
-    reporter.error(`${err}`);
-    return;
-  }
+  const { actions, schema } = args;
   const strings = [];
   options.tables.forEach((table) => {
     const fromType = (0, utils_1.pascalCase)(
       `${constants_1.NODE_TYPE} ${table.tableName}`
     );
     // link records
-    table.recordLinks?.forEach((recordLink) => {
-      const toType = (0, utils_1.pascalCase)(
-        `${constants_1.NODE_TYPE} ${recordLink.toTable}`
-      );
-      const key = lodash_1.default.camelCase(recordLink.fromField);
-      strings.push(`type ${fromType} implements Node {
-          ${key}: [${toType}] @link(by: "airtableId")
-        }`);
-    });
+    if (Array.isArray(table.recordLinks)) {
+      table.recordLinks.forEach((recordLink) => {
+        const toType = (0, utils_1.pascalCase)(
+          `${constants_1.NODE_TYPE} ${recordLink.toTable}`
+        );
+        const key = lodash_1.default.camelCase(recordLink.fromField);
+        strings.push(`type ${fromType} implements Node {
+            ${key}: [${toType}] @link(by: "airtableId")
+          }`);
+      });
+    }
     // link attachments
-    if (Array.isArray(table.downloadLocal) && table.downloadLocal.length > 0) {
+    if (Array.isArray(table.downloadLocal)) {
       table.downloadLocal.forEach((field) => {
         const key = lodash_1.default.camelCase(field);
         strings.push(`type ${fromType} implements Node {

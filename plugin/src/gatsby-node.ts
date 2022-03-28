@@ -170,39 +170,26 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
     args: CreateSchemaCustomizationArgs,
     options: PluginOptions & AirtablePluginOptions
   ) => {
-    const { actions, reporter, schema } = args;
-
-    try {
-      if (options.tables === undefined || options.tables.length === 0) {
-        throw "tables is not defined for gatsby-source-airtable-next in gatsby-config.js";
-      }
-      if (options.apiKey === undefined) {
-        throw "apiKey is not defined for gatsby-source-airtable-next in gatsby-config.js";
-      }
-    } catch (err) {
-      reporter.error(`${err}`);
-      return;
-    }
+    const { actions, schema } = args;
 
     const strings: string[] = [];
     options.tables.forEach((table) => {
       const fromType = pascalCase(`${NODE_TYPE} ${table.tableName}`);
 
       // link records
-      table.recordLinks?.forEach((recordLink) => {
-        const toType = pascalCase(`${NODE_TYPE} ${recordLink.toTable}`);
-        const key = _.camelCase(recordLink.fromField);
+      if (Array.isArray(table.recordLinks)) {
+        table.recordLinks.forEach((recordLink) => {
+          const toType = pascalCase(`${NODE_TYPE} ${recordLink.toTable}`);
+          const key = _.camelCase(recordLink.fromField);
 
-        strings.push(`type ${fromType} implements Node {
-          ${key}: [${toType}] @link(by: "airtableId")
-        }`);
-      });
+          strings.push(`type ${fromType} implements Node {
+            ${key}: [${toType}] @link(by: "airtableId")
+          }`);
+        });
+      }
 
       // link attachments
-      if (
-        Array.isArray(table.downloadLocal) &&
-        table.downloadLocal.length > 0
-      ) {
+      if (Array.isArray(table.downloadLocal)) {
         table.downloadLocal.forEach((field) => {
           const key = _.camelCase(field);
 
