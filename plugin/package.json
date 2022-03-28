@@ -28,6 +28,7 @@
   "homepage": "https://github.com/davidpaulsson/gatsby-source-airtable-next#readme",
   "dependencies": {
     "airtable": "^0.11.2",
+    "gatsby-plugin-utils": "^3.4.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

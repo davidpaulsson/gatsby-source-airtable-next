@@ -11,7 +11,7 @@ const ProductPage = ({ data: { product } }) => {
       {product.images.map((image) => (
         <GatsbyImage
           key={image.id}
-          image={image.localFile.childImageSharp.gatsbyImageData}
+          image={image.gatsbyImage}
           alt={product.name}
         />
       ))}
@@ -42,11 +42,8 @@ export const query = graphql`
       description
       images {
         id
-        localFile {
-          childImageSharp {
-            gatsbyImageData(width: 500, aspectRatio: 1.5)
-          }
-        }
+
+        gatsbyImage(width: 500, aspectRatio: 1.5)
       }
       unitCost
       designer {

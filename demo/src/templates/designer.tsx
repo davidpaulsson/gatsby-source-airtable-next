@@ -8,10 +8,7 @@ const DesignerPage = ({ data: { designer } }) => {
     <div>
       <h1>{designer.name}</h1>
       <p>{designer.bio}</p>
-      <GatsbyImage
-        image={designer.photo[0].localFile.childImageSharp.gatsbyImageData}
-        alt={designer.name}
-      />
+      <GatsbyImage image={designer.photo[0].gatsbyImage} alt={designer.name} />
       <h2>Furniture by {designer.name}</h2>
       <ul>
         {designer.furniture.map(({ name, images }) => (
@@ -20,10 +17,7 @@ const DesignerPage = ({ data: { designer } }) => {
               {name}
 
               <br />
-              <GatsbyImage
-                image={images[0].localFile.childImageSharp.gatsbyImageData}
-                alt={name}
-              />
+              <GatsbyImage image={images[0].gatsbyImage} alt={name} />
             </Link>
           </li>
         ))}
@@ -38,20 +32,12 @@ export const query = graphql`
       name
       bio
       photo {
-        localFile {
-          childImageSharp {
-            gatsbyImageData(width: 500, aspectRatio: 1.5)
-          }
-        }
+        gatsbyImage(width: 500, aspectRatio: 1.5)
       }
       furniture {
         name
         images {
-          localFile {
-            childImageSharp {
-              gatsbyImageData(height: 200, width: 200)
-            }
-          }
+          gatsbyImage(height: 200, width: 200)
         }
       }
     }

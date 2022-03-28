@@ -11,3 +11,16 @@ export type AirtablePluginOptions = {
     downloadLocal?: string[];
   }[];
 };
+
+export type AirtableAttachment = {
+  id: string;
+  height: number;
+  width: number;
+  url: string;
+  type: string;
+  thumbnails: {
+    small: {
+      url: string;
+    };
+  };
+};

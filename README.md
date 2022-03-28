@@ -69,7 +69,7 @@ For example, if you are creating a blog or documentation site, specify a publish
 
 `options: { tables: { downloadLocal?: string[] }[] }` _optional_
 
-If set will download the "Attachment" type fields specified in your gatsby-config. This creates a file node (`localFile`) that then can be queried using GraphQL and used with, for example, [`gatsby-image-plugin`](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/) if it's an image attachment.
+Specifically for image attachment fields. If set will add `gatsbyImage` to nodes that then can be queried using GraphQL and used with, for example, [`gatsby-image-plugin`](https://www.gatsbyjs.com/plugins/gatsby-plugin-image/).
 
 ### How does this compare to `gatsby-source-airtable`?
 
@@ -78,6 +78,7 @@ If set will download the "Attachment" type fields specified in your gatsby-confi
 - Keys are camelCased.
 - Keys are directly on the node and not nested under a `data` property.
 - Node types are per table, so if you source multiple tables you won't have keys with `null` data. Since keys are based on each table, they cannot clash with each other.
+- Works with Gatsby Image CDN.
 
 ## Example
 
