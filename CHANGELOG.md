@@ -1,3 +1,13 @@
+# [4.0.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v3.0.0...v4.0.0) (2022-03-28)
+
+### Features
+
+- add gatsby image cdn support ([7d49449](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/7d49449830bb0275e929a9a02685c7888e6f031e))
+
+### BREAKING CHANGES
+
+- The `localFile` field has been removed. Image queries should now use `image.gatsbyImage` instead of `image.localFile.childImageSharp.gatsbyImageData`.
+
 # [3.0.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v2.1.0...v3.0.0) (2022-03-09)
 
 ### Code Refactoring
