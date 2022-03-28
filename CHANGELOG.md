@@ -1,3 +1,9 @@
+## [4.0.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.0.0...v4.0.1) (2022-03-28)
+
+### Bug Fixes
+
+- code cleanup ([bb07dc1](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/bb07dc126fa44c6bc1c9acad958b24a6fb100c75))
+
 # [4.0.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v3.0.0...v4.0.0) (2022-03-28)
 
 ### Features
