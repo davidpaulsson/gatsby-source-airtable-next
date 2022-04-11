@@ -14,21 +14,21 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "gatsby": "4.10.3",
-    "gatsby-plugin-gatsby-cloud": "^4.10.1",
-    "gatsby-plugin-image": "^2.10.1",
-    "gatsby-plugin-sharp": "^4.10.2",
-    "gatsby-source-airtable-next": "*",
-    "gatsby-source-filesystem": "^4.10.1",
-    "gatsby-transformer-sharp": "^4.10.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
+    "gatsby": "4.11.2",
+    "gatsby-plugin-gatsby-cloud": "^4.11.1",
+    "gatsby-plugin-image": "^2.11.1",
+    "gatsby-plugin-sharp": "^4.11.1",
+    "gatsby-source-airtable-next": "4.0.1",
+    "gatsby-source-filesystem": "^4.11.1",
+    "gatsby-transformer-sharp": "^4.11.0",
+    "react": "18.0.0",
+    "react-dom": "18.0.0",
     "slugify": "^1.6.5"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
-    "@types/react": "^17.0.43",
-    "@types/react-dom": "^17.0.14",
+    "@types/react": "^18.0.1",
+    "@types/react-dom": "^18.0.0",
     "typescript": "^4.6.3"
   }
 }

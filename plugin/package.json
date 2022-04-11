@@ -27,17 +27,16 @@
   },
   "homepage": "https://github.com/davidpaulsson/gatsby-source-airtable-next#readme",
   "dependencies": {
-    "airtable": "^0.11.2",
-    "gatsby-plugin-utils": "^3.4.2",
+    "airtable": "^0.11.3",
+    "gatsby-plugin-utils": "^3.7.0-next.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
-    "gatsby-source-filesystem": "^4.10.1",
-    "typescript": "^4.6.2"
+    "gatsby-source-filesystem": "^4.11.1",
+    "typescript": "^4.6.3"
   },
   "peerDependencies": {
-    "gatsby": "^4.10.3",
-    "gatsby-plugin-image": "^2.10.1"
+    "gatsby": "^4.0.0"
   }
 }
