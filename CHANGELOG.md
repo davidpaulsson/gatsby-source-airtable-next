@@ -1,3 +1,9 @@
+# [4.1.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.0.1...v4.1.0) (2022-08-18)
+
+### Features
+
+- add 'refreshInterval' option ([ac72285](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/ac72285c7727e46d673fbef7dcca4d88493b14b2))
+
 ## [4.0.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.0.0...v4.0.1) (2022-03-28)
 
 ### Bug Fixes
