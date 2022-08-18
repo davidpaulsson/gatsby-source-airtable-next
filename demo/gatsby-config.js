@@ -13,6 +13,7 @@ module.exports = {
       resolve: "gatsby-source-airtable-next",
       options: {
         apiKey: process.env.AIRTABLE_API_KEY,
+        refreshInterval: 300000,
         tables: [
           {
             baseId: process.env.AIRTABLE_BASE_ID,

@@ -1,5 +1,6 @@
 export type AirtablePluginOptions = {
   apiKey: string;
+  refreshInterval: number;
   tables: {
     baseId: string;
     tableName: string;

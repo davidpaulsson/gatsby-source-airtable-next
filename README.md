@@ -24,6 +24,7 @@ module.exports = {
       resolve: "gatsby-source-airtable-next",
       options: {
         apiKey: "AIRTABLE_KEY",
+        refreshInterval: 60000 * 5, // (5 minutes) optional
         tables: [
           {
             baseId: "AIRTABLE_BASE_ID",
@@ -50,6 +51,12 @@ module.exports = {
 During node creation this plugin will convert your Airtable table field names into camel case strings, using [Lodash](https://lodash.com/)'s `_.camelCase()` method, and use that as the node key.
 
 For example `Phone no. (Cell)` will become `phoneNoCell`, `Country of origin` will become `countryOfOrigin`, and `Package volume (m³)` will become `packageVolumeM`.
+
+### Refresh interval
+
+`options: { refreshInterval?: number }` _optional_
+
+If set, time (in milliseconds) to wait between builds for fetching fresh Airtable data. Default: 0
 
 ### "Link to another Record" type fields
 
