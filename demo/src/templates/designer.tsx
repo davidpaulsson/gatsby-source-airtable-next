@@ -32,7 +32,7 @@ export const query = graphql`
       name
       bio
       photo {
-        gatsbyImage(width: 500, aspectRatio: 1.5)
+        gatsbyImage(width: 500, height: 500, quality: 80)
       }
       furniture {
         name

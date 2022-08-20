@@ -5,7 +5,10 @@ exports.createPages = async function ({ actions, graphql }) {
 
   const { data } = await graphql(`
     query {
-      allAirtableFurniture(sort: { fields: name }) {
+      allAirtableFurniture(
+        sort: { fields: name }
+        filter: { unitCost: { ne: null } }
+      ) {
         nodes {
           id
           name
