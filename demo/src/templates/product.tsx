@@ -42,7 +42,6 @@ export const query = graphql`
       description
       images {
         id
-
         gatsbyImage(width: 500, aspectRatio: 1.5)
       }
       unitCost

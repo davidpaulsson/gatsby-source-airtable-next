@@ -16,6 +16,7 @@ const polyfill_remote_file_1 = require("gatsby-plugin-utils/polyfill-remote-file
 const lodash_1 = __importDefault(require("lodash"));
 const constants_1 = require("./constants");
 const utils_1 = require("./utils");
+const gatsby_source_filesystem_1 = require("gatsby-source-filesystem");
 const pluginOptionsSchema = ({ Joi }) => {
   return Joi.object({
     apiKey: Joi.string().required(),
@@ -137,8 +138,8 @@ const sourceNodes = async (args, options) => {
 exports.sourceNodes = sourceNodes;
 //www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
 const onCreateNode = async (args, options) => {
-  const { node, actions, createNodeId, cache, getNode } = args;
-  const { createNode, touchNode } = actions;
+  const { node, actions, createNodeId, cache, getNode, getCache } = args;
+  const { createNode, createNodeField, touchNode } = actions;
   const nodeTypes = options.tables.map((table) =>
     (0, utils_1.pascalCase)(`${constants_1.NODE_TYPE} ${table.tableName}`)
   );
@@ -179,6 +180,24 @@ const onCreateNode = async (args, options) => {
               createNode(airtableAttachmentNode);
               await cache.set(airtableAttachmentNodeId, `${Date.now()}`);
             }
+            // always create localFile key on obj
+            // createRemoteFileNode takes care of cache
+            const fileNode = await (0,
+            gatsby_source_filesystem_1.createRemoteFileNode)({
+              url: obj.url,
+              parentNodeId: airtableAttachmentNodeId,
+              getCache,
+              createNode,
+              createNodeId,
+              ext: (0, utils_1.getExtension)(obj.type),
+            });
+            if (fileNode && existingNode) {
+              createNodeField({
+                node: existingNode,
+                name: "localFile",
+                value: fileNode.id,
+              });
+            }
           }
         });
       }
@@ -203,6 +222,9 @@ const createSchemaCustomization = (args, options) => {
         const key = lodash_1.default.camelCase(recordLink.fromField);
         strings.push(`type ${fromType} implements Node {
             ${key}: [${toType}] @link(by: "airtableId")
+          }
+          type AirtableAttachment implements Node {
+            localFile: File @link(from: "fields.localFile")
           }`);
       });
     }

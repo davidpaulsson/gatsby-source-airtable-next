@@ -5,7 +5,7 @@ var __importDefault =
     return mod && mod.__esModule ? mod : { default: mod };
   };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAttachmentField = exports.pascalCase = void 0;
+exports.getExtension = exports.isAttachmentField = exports.pascalCase = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const pascalCase = (str) =>
   lodash_1.default.startCase(lodash_1.default.camelCase(str)).replace(/ /g, "");
@@ -27,3 +27,19 @@ const isAttachmentField = (obj) => {
   return false;
 };
 exports.isAttachmentField = isAttachmentField;
+const getExtension = (type) => {
+  let extention = type.split("/")[1];
+  switch (extention) {
+    case "jpeg":
+      extention = ".jpg";
+      break;
+    case "svg+xml":
+      extention = ".svg";
+      break;
+    default:
+      extention = `.${extention}`;
+      break;
+  }
+  return extention;
+};
+exports.getExtension = getExtension;

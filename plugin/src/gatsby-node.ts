@@ -14,7 +14,8 @@ import {
 import _ from "lodash";
 import { NODE_TYPE } from "./constants";
 import { AirtablePluginOptions } from "./types";
-import { isAttachmentField, pascalCase } from "./utils";
+import { getExtension, isAttachmentField, pascalCase } from "./utils";
+import { createRemoteFileNode } from "gatsby-source-filesystem";
 
 export const pluginOptionsSchema: GatsbyNode["pluginOptionsSchema"] = ({
   Joi,
@@ -161,8 +162,8 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
   args: CreateNodeArgs,
   options: PluginOptions & AirtablePluginOptions
 ) => {
-  const { node, actions, createNodeId, cache, getNode } = args;
-  const { createNode, touchNode } = actions;
+  const { node, actions, createNodeId, cache, getNode, getCache } = args;
+  const { createNode, createNodeField, touchNode } = actions;
 
   const nodeTypes = options.tables.map((table) =>
     pascalCase(`${NODE_TYPE} ${table.tableName}`)
@@ -207,6 +208,25 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
               createNode(airtableAttachmentNode);
               await cache.set(airtableAttachmentNodeId, `${Date.now()}`);
             }
+
+            // always create localFile key on obj
+            // createRemoteFileNode takes care of cache
+            const fileNode = await createRemoteFileNode({
+              url: obj.url,
+              parentNodeId: airtableAttachmentNodeId,
+              getCache,
+              createNode,
+              createNodeId,
+              ext: getExtension(obj.type),
+            });
+
+            if (fileNode && existingNode) {
+              createNodeField({
+                node: existingNode,
+                name: "localFile",
+                value: fileNode.id,
+              });
+            }
           }
         });
       }
@@ -234,6 +254,9 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
 
           strings.push(`type ${fromType} implements Node {
             ${key}: [${toType}] @link(by: "airtableId")
+          }
+          type AirtableAttachment implements Node {
+            localFile: File @link(from: "fields.localFile")
           }`);
         });
       }

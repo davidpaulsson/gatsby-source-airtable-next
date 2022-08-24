@@ -15,9 +15,14 @@ const DesignerPage = ({ data: { designer } }) => {
           <li key={name}>
             <Link to={`/furniture/${slugify(name, { lower: true })}/`}>
               {name}
-
               <br />
+              Using Gatsby Image CDN
               <GatsbyImage image={images[0].gatsbyImage} alt={name} />
+              Using childImageSharp
+              <GatsbyImage
+                image={images[0].localFile.childImageSharp.gatsbyImageData}
+                alt={name}
+              />
             </Link>
           </li>
         ))}
@@ -38,6 +43,11 @@ export const query = graphql`
         name
         images {
           gatsbyImage(height: 200, width: 200)
+          localFile {
+            childImageSharp {
+              gatsbyImageData(height: 200, width: 200)
+            }
+          }
         }
       }
     }
