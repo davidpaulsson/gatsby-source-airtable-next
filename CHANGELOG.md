@@ -1,3 +1,9 @@
+# [4.2.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.1.0...v4.2.0) (2022-08-24)
+
+### Features
+
+- add localFile to attachment keys ([2385be4](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/2385be4f481219526d1b8d154667df57f98cf351))
+
 # [4.1.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.0.1...v4.1.0) (2022-08-18)
 
 ### Features
