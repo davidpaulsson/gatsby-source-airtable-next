@@ -16,13 +16,23 @@ const DesignerPage = ({ data: { designer } }) => {
             <Link to={`/furniture/${slugify(name, { lower: true })}/`}>
               {name}
               <br />
-              Using Gatsby Image CDN
-              <GatsbyImage image={images[0].gatsbyImage} alt={name} />
-              Using childImageSharp
-              <GatsbyImage
-                image={images[0].localFile.childImageSharp.gatsbyImageData}
-                alt={name}
-              />
+              {images?.[0]?.gatsbyImage !== undefined && (
+                <>
+                  Using Gatsby Image CDN
+                  <GatsbyImage image={images[0].gatsbyImage} alt={name} />
+                </>
+              )}
+
+              {images?.[0]?.localFile?.childImageSharp?.gatsbyImageData !==
+                undefined && (
+                <>
+                  Using childImageSharp
+                  <GatsbyImage
+                    image={images[0].localFile.childImageSharp.gatsbyImageData}
+                    alt={name}
+                  />
+                </>
+              )}
             </Link>
           </li>
         ))}
