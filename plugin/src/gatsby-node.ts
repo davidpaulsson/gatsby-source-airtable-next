@@ -181,12 +181,17 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
               `airtable-attachment-${obj.id}`
             );
             const existingNode = getNode(airtableAttachmentNodeId);
+            const existingAttachmentNode = getNode(airtableAttachmentNodeId);
             const timestamp = await cache.get(airtableAttachmentNodeId);
             const existingNodeAge = Date.now() - timestamp;
 
             if (existingNode && existingNodeAge <= refreshInterval) {
               // Node already exists, make sure it stays around
               touchNode(existingNode);
+
+              if (existingAttachmentNode) {
+                touchNode(existingAttachmentNode);
+              }
             } else {
               const airtableAttachmentNode = {
                 id: airtableAttachmentNodeId,
