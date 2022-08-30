@@ -1,3 +1,9 @@
+## [4.2.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.2.0...v4.2.1) (2022-08-30)
+
+### Bug Fixes
+
+- touch cached attachment nodes ([57cfbf6](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/57cfbf6cbd926d3f7eb571d3d75edb142a4107ec))
+
 # [4.2.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.1.0...v4.2.0) (2022-08-24)
 
 ### Features
