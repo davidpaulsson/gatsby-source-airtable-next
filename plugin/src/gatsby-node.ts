@@ -162,7 +162,8 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
   args: CreateNodeArgs,
   options: PluginOptions & AirtablePluginOptions
 ) => {
-  const { node, actions, createNodeId, cache, getNode, getCache } = args;
+  const { node, actions, createNodeId, cache, getNode, getCache, reporter } =
+    args;
   const { createNode, createNodeField, touchNode } = actions;
 
   const nodeTypes = options.tables.map((table) =>
@@ -216,14 +217,21 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
 
             // always create localFile key on obj
             // createRemoteFileNode takes care of cache
-            const fileNode = await createRemoteFileNode({
-              url: obj.url,
-              parentNodeId: airtableAttachmentNodeId,
-              getCache,
-              createNode,
-              createNodeId,
-              ext: getExtension(obj.type),
-            });
+            let fileNode;
+            try {
+              fileNode = await createRemoteFileNode({
+                url: obj.url,
+                parentNodeId: airtableAttachmentNodeId,
+                getCache,
+                createNode,
+                createNodeId,
+                ext: getExtension(obj.type),
+              });
+            } catch (e) {
+              reporter.panic(
+                `gatsby-source-airtable-next: createRemoteFileNode failed for ${obj.url}`
+              );
+            }
 
             if (fileNode && existingNode) {
               createNodeField({
