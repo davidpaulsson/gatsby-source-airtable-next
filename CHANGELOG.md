@@ -1,3 +1,9 @@
+# [4.3.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.2.1...v4.3.0) (2022-09-20)
+
+### Features
+
+- panic on build if createRemoteFileNode fails ([d255cd4](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/d255cd49486759c1fc562c95bd3f8b1c066d6147))
+
 ## [4.2.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.2.0...v4.2.1) (2022-08-30)
 
 ### Bug Fixes
