@@ -49,9 +49,11 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
     }[] = [];
 
     const { refreshInterval = 0 } = options;
+
     const airtableNodeIds: string[] = await cache.get(
       "gatsby-source-airtable-next-nodes-ids"
     );
+
     const airtableRowsTimestamp = await cache.get(
       "gatsby-source-airtable-next-rows-timestamp"
     );
@@ -177,72 +179,51 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = async (
       if (Array.isArray(value)) {
         value.forEach(async (obj) => {
           if (isAttachmentField(obj)) {
-            const { refreshInterval = 0 } = options;
+            // Create the attachment node
             const airtableAttachmentNodeId = createNodeId(
               `airtable-attachment-${obj.id}`
             );
-            const existingNode = getNode(airtableAttachmentNodeId);
-            const existingAttachmentNode = getNode(airtableAttachmentNodeId);
-            const timestamp = await cache.get(airtableAttachmentNodeId);
-            const existingNodeAge = Date.now() - timestamp;
 
-            if (existingNode && existingNodeAge <= refreshInterval) {
-              // Node already exists, make sure it stays around
-              touchNode(existingNode);
+            console.log({ obj });
 
-              if (existingAttachmentNode) {
-                touchNode(existingAttachmentNode);
-              }
-            } else {
-              const airtableAttachmentNode = {
-                id: airtableAttachmentNodeId,
-                airtableId: obj.id,
-                url: obj.url,
-                width: obj.width,
-                height: obj.height,
-                filename: obj.filename,
-                parent: node.id,
-                placeholderUrl: obj.thumbnails.small.url,
-                mimeType: obj.type,
-                pluginName: "gatsby-source-airtable-next",
-                internal: {
-                  type: "AirtableAttachment",
-                  contentDigest: node.internal.contentDigest,
-                },
-              };
-
-              createNode(airtableAttachmentNode);
-              await cache.set(airtableAttachmentNodeId, `${Date.now()}`);
-            }
-
-            // always create localFile key on obj
-            // createRemoteFileNode takes care of cache
-            let fileNode;
-            try {
-              fileNode = await createRemoteFileNode({
-                url: obj.url,
-                parentNodeId: airtableAttachmentNodeId,
-                getCache,
-                createNode,
-                createNodeId,
-                ext: getExtension(obj.type),
-              });
-            } catch (e) {
-              reporter.panic(
-                `gatsby-source-airtable-next: createRemoteFileNode failed for ${obj.url}`
-              );
-            }
-
-            if (fileNode && existingNode) {
-              createNodeField({
-                node: existingNode,
-                name: "localFile",
-                value: fileNode.id,
-              });
-            }
+            const attachmentNode = await createNode({
+              id: airtableAttachmentNodeId,
+              airtableId: obj.id,
+              url: obj.url,
+              width: obj.width,
+              height: obj.height,
+              filename: obj.filename,
+              parent: node.id,
+              placeholderUrl: obj.thumbnails.small.url,
+              mimeType: obj.type,
+              pluginName: "gatsby-source-airtable-next",
+              internal: {
+                type: "AirtableAttachment",
+                contentDigest: node.internal.contentDigest,
+              },
+            });
           }
         });
       }
+    }
+  }
+
+  if (node.internal.type === "AirtableAttachment") {
+    const fileNode = await createRemoteFileNode({
+      url: node.url as string,
+      parentNodeId: node.id,
+      getCache,
+      createNode,
+      createNodeId,
+      ext: getExtension(node.type as string),
+    });
+
+    if (fileNode) {
+      createNodeField({
+        node,
+        name: "localFile",
+        value: fileNode.id,
+      });
     }
   }
 };

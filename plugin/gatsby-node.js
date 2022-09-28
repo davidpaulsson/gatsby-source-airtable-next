@@ -151,68 +151,49 @@ const onCreateNode = async (args, options) => {
       if (Array.isArray(value)) {
         value.forEach(async (obj) => {
           if ((0, utils_1.isAttachmentField)(obj)) {
-            const { refreshInterval = 0 } = options;
+            // Create the attachment node
             const airtableAttachmentNodeId = createNodeId(
               `airtable-attachment-${obj.id}`
             );
-            const existingNode = getNode(airtableAttachmentNodeId);
-            const existingAttachmentNode = getNode(airtableAttachmentNodeId);
-            const timestamp = await cache.get(airtableAttachmentNodeId);
-            const existingNodeAge = Date.now() - timestamp;
-            if (existingNode && existingNodeAge <= refreshInterval) {
-              // Node already exists, make sure it stays around
-              touchNode(existingNode);
-              if (existingAttachmentNode) {
-                touchNode(existingAttachmentNode);
-              }
-            } else {
-              const airtableAttachmentNode = {
-                id: airtableAttachmentNodeId,
-                airtableId: obj.id,
-                url: obj.url,
-                width: obj.width,
-                height: obj.height,
-                filename: obj.filename,
-                parent: node.id,
-                placeholderUrl: obj.thumbnails.small.url,
-                mimeType: obj.type,
-                pluginName: "gatsby-source-airtable-next",
-                internal: {
-                  type: "AirtableAttachment",
-                  contentDigest: node.internal.contentDigest,
-                },
-              };
-              createNode(airtableAttachmentNode);
-              await cache.set(airtableAttachmentNodeId, `${Date.now()}`);
-            }
-            // always create localFile key on obj
-            // createRemoteFileNode takes care of cache
-            let fileNode;
-            try {
-              fileNode = await (0,
-              gatsby_source_filesystem_1.createRemoteFileNode)({
-                url: obj.url,
-                parentNodeId: airtableAttachmentNodeId,
-                getCache,
-                createNode,
-                createNodeId,
-                ext: (0, utils_1.getExtension)(obj.type),
-              });
-            } catch (e) {
-              reporter.panic(
-                `gatsby-source-airtable-next: createRemoteFileNode failed for ${obj.url}`
-              );
-            }
-            if (fileNode && existingNode) {
-              createNodeField({
-                node: existingNode,
-                name: "localFile",
-                value: fileNode.id,
-              });
-            }
+            console.log({ obj });
+            const attachmentNode = await createNode({
+              id: airtableAttachmentNodeId,
+              airtableId: obj.id,
+              url: obj.url,
+              width: obj.width,
+              height: obj.height,
+              filename: obj.filename,
+              parent: node.id,
+              placeholderUrl: obj.thumbnails.small.url,
+              mimeType: obj.type,
+              pluginName: "gatsby-source-airtable-next",
+              internal: {
+                type: "AirtableAttachment",
+                contentDigest: node.internal.contentDigest,
+              },
+            });
           }
         });
       }
+    }
+  }
+  if (node.internal.type === "AirtableAttachment") {
+    const fileNode = await (0, gatsby_source_filesystem_1.createRemoteFileNode)(
+      {
+        url: node.url,
+        parentNodeId: node.id,
+        getCache,
+        createNode,
+        createNodeId,
+        ext: (0, utils_1.getExtension)(node.type),
+      }
+    );
+    if (fileNode) {
+      createNodeField({
+        node,
+        name: "localFile",
+        value: fileNode.id,
+      });
     }
   }
 };

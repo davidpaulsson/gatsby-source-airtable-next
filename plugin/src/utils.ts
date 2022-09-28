@@ -22,6 +22,10 @@ export const isAttachmentField = (obj: { [key: string]: any }) => {
 };
 
 export const getExtension = (type: string) => {
+  if (!type) {
+    return undefined;
+  }
+
   let extention = type.split("/")[1];
   switch (extention) {
     case "jpeg":
