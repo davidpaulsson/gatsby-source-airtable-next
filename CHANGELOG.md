@@ -1,3 +1,9 @@
+# [4.4.0-next.3](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.4.0-next.2...v4.4.0-next.3) (2022-09-29)
+
+### Features
+
+- retrigger checks ([ff53f1e](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/ff53f1e8d1bc8dca02020d436e07b3f4c0c3935e))
+
 # [4.4.0-next.2](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.4.0-next.1...v4.4.0-next.2) (2022-09-29)
 
 ### Features
