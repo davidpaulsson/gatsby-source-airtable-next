@@ -10,10 +10,10 @@ module.exports = {
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
     {
-      resolve: "gatsby-source-airtable-next",
+      resolve: require.resolve("../plugin"),
       options: {
         apiKey: process.env.AIRTABLE_API_KEY,
-        refreshInterval: 300000,
+        // refreshInterval: 300000,
         tables: [
           {
             baseId: process.env.AIRTABLE_BASE_ID,

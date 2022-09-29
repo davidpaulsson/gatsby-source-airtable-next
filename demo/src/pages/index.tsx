@@ -1,9 +1,9 @@
 import * as React from "react";
 import { graphql, PageProps } from "gatsby";
-
-import * as styles from "./index.module.css";
 import { GatsbyImage, IGatsbyImageData } from "gatsby-plugin-image";
 import _ from "lodash";
+
+import * as styles from "./index.module.css";
 
 const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
   return (
@@ -23,7 +23,7 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
                   }
                   return (
                     <div key={photo.id} className={styles.imageWrapper}>
-                      {/* <div>
+                      <div>
                         <p>
                           <strong>Gatsby Image CDN</strong>
                         </p>
@@ -32,7 +32,7 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
                           image={photo.gatsbyImage}
                           alt={designer.name!}
                         />
-                      </div> */}
+                      </div>
                       <div>
                         <p>
                           <strong>localFile.childImageSharp</strong>
@@ -40,7 +40,7 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
 
                         <GatsbyImage
                           image={
-                            photo.localFile?.childImageSharp?.gatsbyImageData
+                            photo.localFile?.childImageSharp?.gatsbyImageData!
                           }
                           alt={designer.name!}
                         />
@@ -62,7 +62,7 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
                         }
                         return (
                           <div key={photo.id} className={styles.imageWrapper}>
-                            {/* <div>
+                            <div>
                               <p>
                                 <strong>Gatsby Image CDN</strong>
                               </p>
@@ -71,7 +71,7 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
                                 image={photo.gatsbyImage as IGatsbyImageData}
                                 alt={furniture.name!}
                               />
-                            </div> */}
+                            </div>
                             <div>
                               <p>
                                 <strong>localFile.childImageSharp</strong>
@@ -79,8 +79,8 @@ const IndexRoute = ({ data }: PageProps<Queries.IndexRouteQuery>) => {
 
                               <GatsbyImage
                                 image={
-                                  photo.localFile?.childImageSharp
-                                    ?.gatsbyImageData
+                                  photo.localFile!.childImageSharp!
+                                    .gatsbyImageData
                                 }
                                 alt={furniture.name!}
                               />
@@ -114,7 +114,7 @@ export const query = graphql`
         name
         photo {
           id
-          # gatsbyImage(height: 150, width: 150)
+          gatsbyImage(height: 150, width: 150)
           localFile {
             childImageSharp {
               gatsbyImageData(height: 150, width: 150)
@@ -126,7 +126,7 @@ export const query = graphql`
           name
           images {
             id
-            # gatsbyImage(height: 150, width: 150)
+            gatsbyImage(height: 150, width: 150)
             localFile {
               childImageSharp {
                 gatsbyImageData(height: 150, width: 150)

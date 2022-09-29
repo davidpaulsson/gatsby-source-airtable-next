@@ -35,8 +35,6 @@ const sourceNodes = async (args, options) => {
     createContentDigest,
     reporter,
   } = args;
-  console.log("Hello from sourceNodes");
-  reporter.info("Hello from sourceNodes");
   const { createNode, touchNode } = actions;
   try {
     const rows = [];
@@ -96,11 +94,11 @@ const sourceNodes = async (args, options) => {
                   `${constants_1.NODE_TYPE} ${table.tableName}`
                 );
                 // Loop through data and create Gatsby nodes
-                rows.forEach((row) => {
+                rows.forEach(async (row) => {
                   const id = createNodeId(`${nodeType}-${row.airtableId}`);
                   nodesIds.push(id);
                   try {
-                    createNode({
+                    await createNode({
                       ...row,
                       id,
                       parent: null,
@@ -114,15 +112,15 @@ const sourceNodes = async (args, options) => {
                   } catch (error) {
                     reporter.panic("Error creating airtable node:", error);
                   }
-                  for (const [, value] of Object.entries(row)) {
+                  for (const [, arr] of Object.entries(row)) {
                     // Attachment fields are always arrays
-                    if (lodash_1.default.isArray(value)) {
-                      value.forEach(async (obj) => {
+                    if (lodash_1.default.isArray(arr)) {
+                      arr.forEach(async (obj) => {
                         if ((0, utils_1.isAttachmentField)(obj)) {
                           try {
                             // Create the attachment node
                             const airtableAttachmentNodeId = createNodeId(
-                              `airtable-attachment-${obj.airtableId}`
+                              `airtable-attachment-${obj.id}`
                             );
                             await createNode({
                               id: airtableAttachmentNodeId,
@@ -138,8 +136,12 @@ const sourceNodes = async (args, options) => {
                               internal: {
                                 type: "AirtableAttachment",
                                 content: JSON.stringify(obj),
+                                // omit url and thumbnails as they tend to change
                                 contentDigest: createContentDigest(
-                                  obj.airtableId
+                                  lodash_1.default.omit(obj, [
+                                    "url",
+                                    "thumbnails",
+                                  ])
                                 ),
                               },
                             });
@@ -181,9 +183,8 @@ const sourceNodes = async (args, options) => {
   }
 };
 exports.sourceNodes = sourceNodes;
-// //www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
+// www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
 const onCreateNode = async (args) => {
-  console.log("Hello from onCreateNode");
   const { node, actions, createNodeId, getCache } = args;
   const { createNode, createNodeField } = actions;
   if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
@@ -194,7 +195,7 @@ const onCreateNode = async (args) => {
         getCache,
         createNode,
         createNodeId,
-        ext: (0, utils_1.getExtension)(node.type),
+        ext: (0, utils_1.getExtension)(node.mimeType),
       }
     );
     if (fileNode) {
@@ -209,18 +210,15 @@ const onCreateNode = async (args) => {
 exports.onCreateNode = onCreateNode;
 // https://www.gatsbyjs.org/docs/node-apis/#createSchemaCustomization
 const createSchemaCustomization = (args, options) => {
-  console.log("Hello from createSchemaCustomization");
   const { actions, schema, store, reporter } = args;
   const strings = [];
   options.tables.forEach((table) => {
-    console.log(`Airtable: Creating schema for ${table.tableName}`);
     const fromType = (0, utils_1.pascalCase)(
       `${constants_1.NODE_TYPE} ${table.tableName}`
     );
     // link records
     if (table.recordLinks) {
       table.recordLinks.forEach((recordLink) => {
-        console.log(`Airtable: Creating schema for ${recordLink}`);
         const toType = (0, utils_1.pascalCase)(
           `${constants_1.NODE_TYPE} ${recordLink.toTable}`
         );
@@ -236,7 +234,6 @@ const createSchemaCustomization = (args, options) => {
     // link attachments
     if (table.downloadLocal) {
       table.downloadLocal.forEach((field) => {
-        console.log(`Airtable: Creating AirtableAttachment links for ${field}`);
         const key = lodash_1.default.camelCase(field);
         strings.push(`type ${fromType} implements Node {
             ${key}: [AirtableAttachment] @link(by: "airtableId", from: "${key}.id")
@@ -244,7 +241,6 @@ const createSchemaCustomization = (args, options) => {
       });
     }
   });
-  console.log({ strings });
   const typeDefs = strings.join(`
 `);
   actions.createTypes(typeDefs);
