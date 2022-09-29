@@ -124,9 +124,42 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
                     internal: {
                       type: nodeType,
                       content: JSON.stringify(row),
-                      contentDigest: createContentDigest(row),
+                      contentDigest: createContentDigest(row.airtableId),
                     },
                   });
+
+                  for (const [, value] of Object.entries(row)) {
+                    // Attachment fields are always arrays
+                    if (Array.isArray(value)) {
+                      value.forEach(async (obj) => {
+                        if (isAttachmentField(obj)) {
+                          // Create the attachment node
+                          const airtableAttachmentNodeId = createNodeId(
+                            `airtable-attachment-${obj.airtableId}`
+                          );
+
+                          await createNode({
+                            id: airtableAttachmentNodeId,
+                            airtableId: obj.id,
+                            url: obj.url,
+                            width: obj.width,
+                            height: obj.height,
+                            filename: obj.filename,
+                            parent: id,
+                            placeholderUrl: obj.thumbnails.small.url,
+                            mimeType: obj.type,
+                            pluginName: "gatsby-source-airtable-next",
+                            internal: {
+                              type: "AirtableAttachment",
+                              contentDigest: createContentDigest(
+                                row.airtableId
+                              ),
+                            },
+                          });
+                        }
+                      });
+                    }
+                  }
                 });
 
                 const seconds = (Date.now() - now.getTime()) / 1000;
@@ -161,57 +194,14 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
 
 //www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
 export const onCreateNode: GatsbyNode["onCreateNode"] = async (
-  args: CreateNodeArgs,
-  options: PluginOptions & AirtablePluginOptions
+  args: CreateNodeArgs
 ) => {
-  const { node, actions, createNodeId, cache, getNode, getCache, reporter } =
-    args;
-  const { createNode, createNodeField, touchNode } = actions;
-
-  const nodeTypes = options.tables.map((table) =>
-    pascalCase(`${NODE_TYPE} ${table.tableName}`)
-  );
-
-  if (nodeTypes.includes(node.internal.type)) {
-    // Find any attachement fields
-    for (const [, value] of Object.entries(node)) {
-      // Attachment fields are always arrays
-      if (Array.isArray(value)) {
-        value.forEach(async (obj) => {
-          if (isAttachmentField(obj)) {
-            // Create the attachment node
-            const airtableAttachmentNodeId = createNodeId(
-              `airtable-attachment-${obj.id}`
-            );
-
-            console.log({ obj });
-
-            const attachmentNode = await createNode({
-              id: airtableAttachmentNodeId,
-              airtableId: obj.id,
-              url: obj.url,
-              width: obj.width,
-              height: obj.height,
-              filename: obj.filename,
-              parent: node.id,
-              placeholderUrl: obj.thumbnails.small.url,
-              mimeType: obj.type,
-              pluginName: "gatsby-source-airtable-next",
-              internal: {
-                type: "AirtableAttachment",
-                contentDigest: node.internal.contentDigest,
-              },
-            });
-          }
-        });
-      }
-    }
-  }
-
-  if (node.internal.type === "AirtableAttachment") {
+  const { node, actions, createNodeId, getCache } = args;
+  const { createNode, createNodeField } = actions;
+  if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
     const fileNode = await createRemoteFileNode({
       url: node.url as string,
-      parentNodeId: node.id,
+      parentNodeId: node.parent,
       getCache,
       createNode,
       createNodeId,
