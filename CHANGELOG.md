@@ -1,3 +1,9 @@
+# [4.4.0-next.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.3.0...v4.4.0-next.1) (2022-09-28)
+
+### Features
+
+- better cache control ([16fa209](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/16fa209fc000bd8d68ed44af94f45a5c824406b5))
+
 # [4.3.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.2.1...v4.3.0) (2022-09-20)
 
 ### Features
