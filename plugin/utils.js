@@ -18,9 +18,7 @@ const isAttachmentField = (obj) => {
     obj.width &&
     obj.height &&
     obj.filename &&
-    typeof obj.thumbnails === "object" &&
-    !Array.isArray(obj.thumbnails) &&
-    obj.thumbnails !== null
+    lodash_1.default.isObject(obj.thumbnails)
   ) {
     return true;
   }

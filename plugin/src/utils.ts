@@ -11,9 +11,7 @@ export const isAttachmentField = (obj: { [key: string]: any }) => {
     obj.width &&
     obj.height &&
     obj.filename &&
-    typeof obj.thumbnails === "object" &&
-    !Array.isArray(obj.thumbnails) &&
-    obj.thumbnails !== null
+    _.isObject(obj.thumbnails)
   ) {
     return true;
   }
