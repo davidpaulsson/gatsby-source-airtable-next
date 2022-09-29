@@ -1,3 +1,9 @@
+# [4.4.0-next.2](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.4.0-next.1...v4.4.0-next.2) (2022-09-29)
+
+### Features
+
+- create digest based off airtableId ([8e5613d](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/8e5613d7b84f5063af1df86da654c2197a2077e3))
+
 # [4.4.0-next.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.3.0...v4.4.0-next.1) (2022-09-28)
 
 ### Features
