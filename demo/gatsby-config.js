@@ -3,6 +3,7 @@ require("dotenv").config({
 });
 
 module.exports = {
+  graphqlTypegen: true,
   trailingSlash: "always",
   plugins: [
     "gatsby-plugin-image",

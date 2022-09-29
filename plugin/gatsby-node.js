@@ -7,6 +7,7 @@ var __importDefault =
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.onCreateDevServer =
   exports.createSchemaCustomization =
+  exports.onCreateNode =
   exports.sourceNodes =
   exports.pluginOptionsSchema =
     void 0;
@@ -15,6 +16,7 @@ const polyfill_remote_file_1 = require("gatsby-plugin-utils/polyfill-remote-file
 const lodash_1 = __importDefault(require("lodash"));
 const constants_1 = require("./constants");
 const utils_1 = require("./utils");
+const gatsby_source_filesystem_1 = require("gatsby-source-filesystem");
 const pluginOptionsSchema = ({ Joi }) => {
   return Joi.object({
     apiKey: Joi.string().required(),
@@ -33,6 +35,8 @@ const sourceNodes = async (args, options) => {
     createContentDigest,
     reporter,
   } = args;
+  console.log("Hello from sourceNodes");
+  reporter.info("Hello from sourceNodes");
   const { createNode, touchNode } = actions;
   try {
     const rows = [];
@@ -112,7 +116,7 @@ const sourceNodes = async (args, options) => {
                   }
                   for (const [, value] of Object.entries(row)) {
                     // Attachment fields are always arrays
-                    if (Array.isArray(value)) {
+                    if (lodash_1.default.isArray(value)) {
                       value.forEach(async (obj) => {
                         if ((0, utils_1.isAttachmentField)(obj)) {
                           try {
@@ -139,8 +143,6 @@ const sourceNodes = async (args, options) => {
                                 ),
                               },
                             });
-                            // const n = getNode(airtableAttachmentNodeId);
-                            // console.log({ n });
                           } catch (error) {
                             reporter.panic(
                               "Error creating airtable attachment file node:",
@@ -179,42 +181,46 @@ const sourceNodes = async (args, options) => {
   }
 };
 exports.sourceNodes = sourceNodes;
-//www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
-// export const onCreateNode: GatsbyNode["onCreateNode"] = async (
-//   args: CreateNodeArgs
-// ) => {
-//   const { node, actions, createNodeId, getCache } = args;
-//   const { createNode, createNodeField } = actions;
-//   if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
-//     const fileNode = await createRemoteFileNode({
-//       url: node.url as string,
-//       parentNodeId: node.parent,
-//       getCache,
-//       createNode,
-//       createNodeId,
-//       ext: getExtension(node.type as string),
-//     });
-//     if (_.isObject(fileNode)) {
-//       console.log("fileNode", fileNode);
-//       createNodeField({
-//         node,
-//         name: "localFile",
-//         value: fileNode.id,
-//       });
-//     }
-//   }
-// };
+// //www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
+const onCreateNode = async (args) => {
+  console.log("Hello from onCreateNode");
+  const { node, actions, createNodeId, getCache } = args;
+  const { createNode, createNodeField } = actions;
+  if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
+    const fileNode = await (0, gatsby_source_filesystem_1.createRemoteFileNode)(
+      {
+        url: node.url,
+        parentNodeId: node.parent,
+        getCache,
+        createNode,
+        createNodeId,
+        ext: (0, utils_1.getExtension)(node.type),
+      }
+    );
+    if (fileNode) {
+      createNodeField({
+        node,
+        name: "localFile",
+        value: fileNode.id,
+      });
+    }
+  }
+};
+exports.onCreateNode = onCreateNode;
 // https://www.gatsbyjs.org/docs/node-apis/#createSchemaCustomization
 const createSchemaCustomization = (args, options) => {
-  const { actions, schema, store } = args;
+  console.log("Hello from createSchemaCustomization");
+  const { actions, schema, store, reporter } = args;
   const strings = [];
   options.tables.forEach((table) => {
+    console.log(`Airtable: Creating schema for ${table.tableName}`);
     const fromType = (0, utils_1.pascalCase)(
       `${constants_1.NODE_TYPE} ${table.tableName}`
     );
     // link records
-    if (Array.isArray(table.recordLinks)) {
+    if (table.recordLinks) {
       table.recordLinks.forEach((recordLink) => {
+        console.log(`Airtable: Creating schema for ${recordLink}`);
         const toType = (0, utils_1.pascalCase)(
           `${constants_1.NODE_TYPE} ${recordLink.toTable}`
         );
@@ -228,8 +234,9 @@ const createSchemaCustomization = (args, options) => {
       });
     }
     // link attachments
-    if (Array.isArray(table.downloadLocal)) {
+    if (table.downloadLocal) {
       table.downloadLocal.forEach((field) => {
+        console.log(`Airtable: Creating AirtableAttachment links for ${field}`);
         const key = lodash_1.default.camelCase(field);
         strings.push(`type ${fromType} implements Node {
             ${key}: [AirtableAttachment] @link(by: "airtableId", from: "${key}.id")
@@ -237,6 +244,7 @@ const createSchemaCustomization = (args, options) => {
       });
     }
   });
+  console.log({ strings });
   const typeDefs = strings.join(`
 `);
   actions.createTypes(typeDefs);
@@ -258,6 +266,7 @@ const createSchemaCustomization = (args, options) => {
   ]);
 };
 exports.createSchemaCustomization = createSchemaCustomization;
+// https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateDevServer
 const onCreateDevServer = (args) => {
   const { app } = args;
   (0, polyfill_remote_file_1.polyfillImageServiceDevRoutes)(app);

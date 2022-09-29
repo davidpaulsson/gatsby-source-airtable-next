@@ -19,3 +19,4 @@ public/
 plugin/README.md
 demo/.env.development
 demo/.env.production
+demo/src/gatsby-types.d.ts

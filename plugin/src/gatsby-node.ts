@@ -16,7 +16,6 @@ import { NODE_TYPE } from "./constants";
 import { AirtablePluginOptions } from "./types";
 import { getExtension, isAttachmentField, pascalCase } from "./utils";
 import { createRemoteFileNode } from "gatsby-source-filesystem";
-import { report } from "process";
 
 export const pluginOptionsSchema: GatsbyNode["pluginOptionsSchema"] = ({
   Joi,
@@ -41,6 +40,8 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
     createContentDigest,
     reporter,
   } = args;
+  console.log("Hello from sourceNodes");
+  reporter.info("Hello from sourceNodes");
   const { createNode, touchNode } = actions;
 
   try {
@@ -138,7 +139,7 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
 
                   for (const [, value] of Object.entries(row)) {
                     // Attachment fields are always arrays
-                    if (Array.isArray(value)) {
+                    if (_.isArray(value)) {
                       value.forEach(async (obj) => {
                         if (isAttachmentField(obj)) {
                           try {
@@ -166,9 +167,6 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
                                 ),
                               },
                             });
-
-                            // const n = getNode(airtableAttachmentNodeId);
-                            // console.log({ n });
                           } catch (error) {
                             reporter.panic(
                               "Error creating airtable attachment file node:",
@@ -211,32 +209,32 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
   }
 };
 
-//www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
-// export const onCreateNode: GatsbyNode["onCreateNode"] = async (
-//   args: CreateNodeArgs
-// ) => {
-//   const { node, actions, createNodeId, getCache } = args;
-//   const { createNode, createNodeField } = actions;
-//   if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
-//     const fileNode = await createRemoteFileNode({
-//       url: node.url as string,
-//       parentNodeId: node.parent,
-//       getCache,
-//       createNode,
-//       createNodeId,
-//       ext: getExtension(node.type as string),
-//     });
+// //www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateNode
+export const onCreateNode: GatsbyNode["onCreateNode"] = async (
+  args: CreateNodeArgs
+) => {
+  console.log("Hello from onCreateNode");
+  const { node, actions, createNodeId, getCache } = args;
+  const { createNode, createNodeField } = actions;
+  if (node.internal.type === "AirtableAttachment" && node.parent !== null) {
+    const fileNode = await createRemoteFileNode({
+      url: node.url as string,
+      parentNodeId: node.parent,
+      getCache,
+      createNode,
+      createNodeId,
+      ext: getExtension(node.type as string),
+    });
 
-//     if (_.isObject(fileNode)) {
-//       console.log("fileNode", fileNode);
-//       createNodeField({
-//         node,
-//         name: "localFile",
-//         value: fileNode.id,
-//       });
-//     }
-//   }
-// };
+    if (fileNode) {
+      createNodeField({
+        node,
+        name: "localFile",
+        value: fileNode.id,
+      });
+    }
+  }
+};
 
 // https://www.gatsbyjs.org/docs/node-apis/#createSchemaCustomization
 export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
@@ -244,15 +242,19 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
     args: CreateSchemaCustomizationArgs,
     options: PluginOptions & AirtablePluginOptions
   ) => {
-    const { actions, schema, store } = args;
+    console.log("Hello from createSchemaCustomization");
+    const { actions, schema, store, reporter } = args;
 
     const strings: string[] = [];
     options.tables.forEach((table) => {
+      console.log(`Airtable: Creating schema for ${table.tableName}`);
+
       const fromType = pascalCase(`${NODE_TYPE} ${table.tableName}`);
 
       // link records
-      if (Array.isArray(table.recordLinks)) {
+      if (table.recordLinks) {
         table.recordLinks.forEach((recordLink) => {
+          console.log(`Airtable: Creating schema for ${recordLink}`);
           const toType = pascalCase(`${NODE_TYPE} ${recordLink.toTable}`);
           const key = _.camelCase(recordLink.fromField);
 
@@ -266,8 +268,11 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
       }
 
       // link attachments
-      if (Array.isArray(table.downloadLocal)) {
+      if (table.downloadLocal) {
         table.downloadLocal.forEach((field) => {
+          console.log(
+            `Airtable: Creating AirtableAttachment links for ${field}`
+          );
           const key = _.camelCase(field);
 
           strings.push(`type ${fromType} implements Node {
@@ -276,6 +281,8 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
         });
       }
     });
+
+    console.log({ strings });
 
     const typeDefs = strings.join(`
 `);
@@ -300,6 +307,7 @@ export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] 
     ]);
   };
 
+// https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/#onCreateDevServer
 export const onCreateDevServer: GatsbyNode["onCreateDevServer"] = (
   args: CreateDevServerArgs
 ) => {
