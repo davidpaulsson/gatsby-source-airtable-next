@@ -1,3 +1,9 @@
+## [4.3.2](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.3.1...v4.3.2) (2022-12-29)
+
+### Bug Fixes
+
+- rebuild source for 4.3.1 ([3b7af05](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/3b7af051610661728a8d094e39624c070680f9da)), closes [/github.com/davidpaulsson/gatsby-source-airtable-next/issues/6#issuecomment-1367318717](https://github.com//github.com/davidpaulsson/gatsby-source-airtable-next/issues/6/issues/issuecomment-1367318717)
+
 ## [4.3.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.3.0...v4.3.1) (2022-12-29)
 
 ### Bug Fixes
