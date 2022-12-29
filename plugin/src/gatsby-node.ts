@@ -43,11 +43,6 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
   const { createNode, touchNode } = actions;
 
   try {
-    const rows: {
-      airtableId: string;
-      [key: string]: any;
-    }[] = [];
-
     const { refreshInterval = 0 } = options;
     const airtableNodeIds: string[] = await cache.get(
       "gatsby-source-airtable-next-nodes-ids"
@@ -80,6 +75,11 @@ export const sourceNodes: GatsbyNode["sourceNodes"] = async (
           const viewOptions = table.tableView
             ? { view: table.tableView }
             : undefined;
+
+          const rows: {
+            airtableId: string;
+            [key: string]: any;
+          }[] = [];
 
           base(table.tableName)
             .select(viewOptions)
