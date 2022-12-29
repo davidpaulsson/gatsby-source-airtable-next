@@ -37,7 +37,6 @@ const sourceNodes = async (args, options) => {
   } = args;
   const { createNode, touchNode } = actions;
   try {
-    const rows = [];
     const { refreshInterval = 0 } = options;
     const airtableNodeIds = await cache.get(
       "gatsby-source-airtable-next-nodes-ids"
@@ -65,6 +64,7 @@ const sourceNodes = async (args, options) => {
           const viewOptions = table.tableView
             ? { view: table.tableView }
             : undefined;
+          const rows = [];
           base(table.tableName)
             .select(viewOptions)
             .eachPage(
