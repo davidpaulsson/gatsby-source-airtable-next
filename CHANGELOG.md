@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.3.0...v4.3.1) (2022-12-29)
+
+### Bug Fixes
+
+- create separate nodes for each table ([a00fd96](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/a00fd9629fc18f812be01a4c9a8dcff6904c37f3))
+- create separate nodes for each table [#7](https://github.com/davidpaulsson/gatsby-source-airtable-next/issues/7) ([dc1c5ca](https://github.com/davidpaulsson/gatsby-source-airtable-next/commit/dc1c5ca06149ff21401e0df2f3684dd56dfb45c5))
+
 # [4.3.0](https://github.com/davidpaulsson/gatsby-source-airtable-next/compare/v4.2.1...v4.3.0) (2022-09-20)
 
 ### Features
